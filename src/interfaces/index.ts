@@ -1,3 +1,5 @@
 import IUser from "./IUser";
+import IShop from "./IShop";
+import ICategory from "./ICategory";
 
-export { IUser };
+export { IUser, IShop, ICategory };

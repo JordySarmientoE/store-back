@@ -1,6 +1,7 @@
 import pino from "pino";
 import { Request, Response } from "express";
 import AuthService from "../services/Auth";
+import sendError from "../utils/error-helper";
 
 class AuthController {
   logger;
@@ -17,14 +18,10 @@ class AuthController {
       this.logger.info("-- Request --");
       this.logger.info(req.body);
       const response = await this.service.login(req.body);
-      this.logger.info("-- Response --");
-      this.logger.info(response);
+
       res.json(response);
-    } catch (error: any) {
-      this.logger.error(error);
-      res
-        .status(error.code || 500)
-        .json({ message: error.message || "Error en el servidor" });
+    } catch (error) {
+      sendError(res, error);
     }
   }
 }

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import pino from "pino";
 import { UserService } from "../services";
 import CustomRequest from "../interfaces/CustomRequest";
+import sendError from "../utils/error-helper";
 
 class UserController {
   logger;
@@ -18,14 +19,9 @@ class UserController {
       this.logger.info("-- Request --");
       this.logger.info(req.body);
       const response = await this.service.register(req.body);
-      this.logger.info("-- Response --");
-      this.logger.info(response);
       res.json(response);
-    } catch (error: any) {
-      this.logger.error(error);
-      res
-        .status(error.code || 500)
-        .json({ message: error.message || "Error en el servidor" });
+    } catch (error) {
+      sendError(res, error);
     }
   }
 

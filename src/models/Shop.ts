@@ -20,9 +20,9 @@ const ShopSchema = new Schema({
 });
 
 ShopSchema.methods.toJSON = function () {
-  const user = this.toObject();
-  delete user.__v;
-  return user;
+  const shop = this.toObject();
+  delete shop.__v;
+  return shop;
 };
 
 export default model("Shop", ShopSchema);

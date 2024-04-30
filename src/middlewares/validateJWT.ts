@@ -2,6 +2,7 @@ import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { UserRepository } from "../repositories";
 import CustomRequest from "../interfaces/CustomRequest";
+import { IUser } from "../interfaces";
 
 const repository = new UserRepository();
 
@@ -34,7 +35,7 @@ const validateJWT = async (
       });
     }
 
-    req.user = usuario;
+    req.user = usuario as IUser;
 
     next();
   } catch (err) {
