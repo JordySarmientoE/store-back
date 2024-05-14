@@ -26,7 +26,7 @@ class CategoryRepository {
   }
 
   async findOne(user: IUser, id: Types.ObjectId) {
-    return CategoryModel.findOne({ _id: id, shop: user.shop?._id });
+    return CategoryModel.findOne({ _id: id, shop: user.shop?._id, status: true });
   }
 
   async update(user: IUser, id: Types.ObjectId, category: ICategory) {

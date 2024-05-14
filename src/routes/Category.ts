@@ -49,4 +49,18 @@ router.put(
   controller.update
 );
 
+router.delete(
+  "/delete/:id",
+  [
+    validateJWT,
+    check("id", "El id es obligatorio")
+      .not()
+      .isEmpty()
+      .isMongoId()
+      .withMessage("El id debe ser un Mongo Id"),
+    ValidateMiddleware,
+  ],
+  controller.delete
+);
+
 export default router;

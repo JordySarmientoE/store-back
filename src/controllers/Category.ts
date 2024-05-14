@@ -45,7 +45,7 @@ class CategoryController {
   async findOne(req: CustomRequest, res: Response) {
     try {
       this.logger.info("-- Request --");
-      this.logger.info(req.body);
+      this.logger.info(req.params);
       const user = req.user!;
       const categoryId = req.params.id as unknown as Types.ObjectId;
       const response = await this.service.findOne(user, categoryId);
@@ -58,7 +58,7 @@ class CategoryController {
   async update(req: CustomRequest, res: Response) {
     try {
       this.logger.info("-- Request --");
-      this.logger.info(req.body);
+      this.logger.info(req.params);
       const user = req.user!;
       const categoryId = req.params.id as unknown as Types.ObjectId;
       const response = await this.service.update(user, categoryId, req.body);
@@ -71,9 +71,10 @@ class CategoryController {
   async delete(req: CustomRequest, res: Response) {
     try {
       this.logger.info("-- Request --");
-      this.logger.info(req.body);
+      this.logger.info(req.params);
       const user = req.user!;
-      const response = await this.service.create(user, req.body);
+      const categoryId = req.params.id as unknown as Types.ObjectId;
+      const response = await this.service.delete(user, categoryId);
       res.json(response);
     } catch (error) {
       sendError(res, error);
