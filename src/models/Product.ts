@@ -25,6 +25,10 @@ const ProductSchema = new Schema({
     type: Number,
     default: 0,
   },
+  shop: {
+    type: Types.ObjectId,
+    ref: "Shop",
+  },
 });
 
 ProductSchema.methods.toJSON = function () {
@@ -33,4 +37,4 @@ ProductSchema.methods.toJSON = function () {
   return product;
 };
 
-export default model("Category", ProductSchema);
+export default model("Product", ProductSchema);

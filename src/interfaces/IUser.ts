@@ -9,4 +9,5 @@ export default interface IUser {
   email: string;
   _id: Types.ObjectId;
   shop?: IShop | undefined;
+  status: boolean;
 }

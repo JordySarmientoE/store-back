@@ -1,7 +1,13 @@
 import express from "express";
 import cors from "cors";
 import pino from "pino";
-import { UserRoutes, ShopRoutes, AuthRoutes, CategoryRoutes } from "../routes";
+import {
+  UserRoutes,
+  ShopRoutes,
+  AuthRoutes,
+  CategoryRoutes,
+  ProductRoutes,
+} from "../routes";
 import dbConnection from "../database/config";
 
 class Server {
@@ -39,6 +45,7 @@ class Server {
     this.app.use("/api/shop", ShopRoutes);
     this.app.use("/api/auth", AuthRoutes);
     this.app.use("/api/category", CategoryRoutes);
+    this.app.use("/api/product", ProductRoutes);
   }
 }
 

@@ -34,7 +34,7 @@ class CategoryService {
     return this.repository.list(user);
   }
 
-  async findOne(user: IUser, id: Types.ObjectId) {
+  async findOne(user: IUser, id: Types.ObjectId): Promise<ICategory> {
     if (!user.shop) {
       throw {
         message: "Usuario no cuenta con tienda",

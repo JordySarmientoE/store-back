@@ -5,4 +5,5 @@ export default interface IShop {
   address: string;
   phone: number;
   _id?: Types.ObjectId;
+  status: boolean;
 }
