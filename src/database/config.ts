@@ -1,16 +1,13 @@
-import mongoose from "mongoose";
-import pino from "pino";
+import AppDataSouce from "./datasource";
 
 const dbConnection = async () => {
-  const logger = pino();
-  try {
-    await mongoose.connect(process.env.MONGODB_CNN!, {});
-
-    logger.info("Base de datos online");
-  } catch (err) {
-    logger.error(err);
-    throw new Error("Error al iniciar la base de datos");
-  }
+  AppDataSouce.initialize()
+    .then(() => {
+      console.log("Conexión a la base de datos establecida");
+    })
+    .catch((error) => {
+      console.error("Error al conectar con la base de datos", error);
+    });
 };
 
 export default dbConnection;

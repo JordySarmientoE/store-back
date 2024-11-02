@@ -1,7 +1,6 @@
 import pino from "pino";
 import { IUser, IShop } from "../interfaces";
 import { ShopRepository, UserRepository } from "../repositories";
-import { Types } from "mongoose";
 
 class ShopService {
   logger;
@@ -14,13 +13,12 @@ class ShopService {
     this.register = this.register.bind(this);
   }
 
-  async register(user: IUser, shop: IShop) {
+  async register(shop: IShop) {
     const newShop = await this.shopRepository.create(shop);
-    const newUser = await this.userRepository.assignShop(user._id, newShop._id);
-    return newUser;
+    return newShop;
   }
 
-  async assignShop(user: IUser, newUser: Types.ObjectId) {
+  async assignShop(user: IUser, newUser: number) {
     if (!user.shop) {
       throw {
         message: "Usuario no cuenta con tienda",
@@ -29,7 +27,7 @@ class ShopService {
     }
     const userShop = await this.userRepository.assignShop(
       newUser,
-      user.shop._id!
+      user.shop
     );
     return userShop;
   }

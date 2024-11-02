@@ -8,36 +8,19 @@ import {
   JoinColumn,
 } from "typeorm";
 import Shop from "./Shop";
-import { Role } from "../interfaces/IUser";
+import Product from "./Product";
+import { MovementType } from "../interfaces/IInventoryMovement";
 
 @Entity()
-class User {
+class InventoryMovement {
   @PrimaryGeneratedColumn()
     id!: number;
-
-  @Column({ type: "varchar", length: 255 })
-    name!: string;
-
-  @Column({ type: "varchar", length: 255 })
-    lastname!: string;
-
-  @Column({ type: "varchar", length: 255 })
-    email?: string;
-
-  @Column({ type: "varchar", length: 255 })
-    password?: string;
 
   @Column({ type: "boolean", default: true })
     status!: boolean;
 
-  @Column({ type: "varchar", length: 9, nullable: true })
-    phone!: string;
-
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt!: Date;
-
-  @Column({ type: "varchar", length: 255, nullable: false, default: "BUYER" })
-    role?: Role;
 
   @UpdateDateColumn({
     type: "timestamp",
@@ -46,12 +29,25 @@ class User {
   })
     updatedAt!: Date;
 
-  @ManyToOne(() => Shop, (shop) => shop.users)
+  @ManyToOne(() => Shop, (shop) => shop.categories)
   @JoinColumn({ name: "shopId" })
     shop?: Shop;
 
   @Column({ type: "int" })
     shopId?: number;
+
+  @ManyToOne(() => Product, (product) => product.inventoryMovements)
+  @JoinColumn({ name: "productId" })
+    product?: Product;
+  
+  @Column({ type: "int" })
+    productId?: number;
+
+  @Column({ type: "varchar", length: 3 })
+    movementType?: MovementType;
+
+  @Column({ type: "int" })
+    quantity?: number;
 }
 
-export default User;
+export default InventoryMovement;

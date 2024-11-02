@@ -2,9 +2,8 @@ import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { UserRepository } from "../repositories";
 import CustomRequest from "../interfaces/CustomRequest";
-import { IUser } from "../interfaces";
 
-const repository = new UserRepository();
+const userRepository = new UserRepository();
 
 const validateJWT = async (
   req: CustomRequest,
@@ -27,7 +26,7 @@ const validateJWT = async (
       });
     }
 
-    const usuario = await repository.getById(decoded.uid!);
+    const usuario = await userRepository.getById(decoded.id, decoded.shopId);
 
     if (!usuario || !usuario.status) {
       return res.status(401).json({
@@ -35,7 +34,7 @@ const validateJWT = async (
       });
     }
 
-    req.user = usuario as IUser;
+    req.user = usuario;
 
     next();
   } catch (err) {

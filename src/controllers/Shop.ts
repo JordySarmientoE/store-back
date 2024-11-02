@@ -18,8 +18,7 @@ class ShopController {
     try {
       this.logger.info("-- Request --");
       this.logger.info(req.body);
-      const user = req.user!;
-      const response = await this.service.register(user, req.body);
+      const response = await this.service.register(req.body);
       res.json(response);
     } catch (error) {
       sendError(res, error);

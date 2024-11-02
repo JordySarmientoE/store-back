@@ -6,38 +6,22 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 import Shop from "./Shop";
-import { Role } from "../interfaces/IUser";
+import OrderProduct from "./OrderProduct";
+import Payment from "./Payment";
 
 @Entity()
-class User {
+class Order {
   @PrimaryGeneratedColumn()
     id!: number;
-
-  @Column({ type: "varchar", length: 255 })
-    name!: string;
-
-  @Column({ type: "varchar", length: 255 })
-    lastname!: string;
-
-  @Column({ type: "varchar", length: 255 })
-    email?: string;
-
-  @Column({ type: "varchar", length: 255 })
-    password?: string;
 
   @Column({ type: "boolean", default: true })
     status!: boolean;
 
-  @Column({ type: "varchar", length: 9, nullable: true })
-    phone!: string;
-
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt!: Date;
-
-  @Column({ type: "varchar", length: 255, nullable: false, default: "BUYER" })
-    role?: Role;
 
   @UpdateDateColumn({
     type: "timestamp",
@@ -46,12 +30,25 @@ class User {
   })
     updatedAt!: Date;
 
-  @ManyToOne(() => Shop, (shop) => shop.users)
+  @Column({ type: "int", default: 0 })
+    total!: number;
+
+  @ManyToOne(() => Shop, (shop) => shop.orders)
   @JoinColumn({ name: "shopId" })
     shop?: Shop;
 
   @Column({ type: "int" })
     shopId?: number;
+
+  @OneToMany(() => OrderProduct, (orderProduct) => orderProduct.order)
+    orderProducts?: OrderProduct[];
+
+  @ManyToOne(() => Payment, (payment) => payment.orders)
+    @JoinColumn({ name: "paymentId" })
+    payment?: Payment;
+  
+  @Column({ type: "int" })
+    paymentId?: number;
 }
 
-export default User;
+export default Order;

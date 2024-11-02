@@ -3,7 +3,6 @@ import CustomRequest from "../interfaces/CustomRequest";
 import pino from "pino";
 import { ProductService } from "../services";
 import sendError from "../utils/error-helper";
-import { Types } from "mongoose";
 
 class ProductController {
   logger;
@@ -49,7 +48,7 @@ class ProductController {
       this.logger.info("-- Request --");
       this.logger.info(req.params);
       const user = req.user!;
-      const productId = req.params.id as unknown as Types.ObjectId;
+      const productId = Number(req.params.id);
       const response = await this.service.findOne(user, productId);
       res.json(response);
     } catch (error) {
@@ -62,7 +61,7 @@ class ProductController {
       this.logger.info("-- Request --");
       this.logger.info(req.params);
       const user = req.user!;
-      const productId = req.params.id as unknown as Types.ObjectId;
+      const productId = Number(req.params.id);
       const response = await this.service.update(user, productId, req.body);
       res.json(response);
     } catch (error) {
@@ -75,7 +74,7 @@ class ProductController {
       this.logger.info("-- Request --");
       this.logger.info(req.params);
       const user = req.user!;
-      const productId = req.params.id as unknown as Types.ObjectId;
+      const productId = Number(req.params.id);
       const response = await this.service.delete(user, productId);
       res.json(response);
     } catch (error) {
@@ -88,7 +87,7 @@ class ProductController {
       this.logger.info("-- Request --");
       this.logger.info(req.params);
       const user = req.user!;
-      const categoryId = req.params.id as unknown as Types.ObjectId;
+      const categoryId = Number(req.params.id);
       const response = await this.service.listByCategory(user, categoryId);
       res.json(response);
     } catch (error) {

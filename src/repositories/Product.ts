@@ -1,69 +1,65 @@
 import pino from "pino";
 import { ProductModel } from "../models";
-import { IProduct, IUser } from "../interfaces";
-import { Types } from "mongoose";
+import { ICategory, IProduct, IUser } from "../interfaces";
+import AppDataSouce from "../database/datasource";
 
 class ProductRepository {
   logger;
+  repository;
 
   constructor() {
     this.logger = pino();
+    this.repository = AppDataSouce.getRepository(ProductModel);
   }
 
   async create(
     user: IUser,
     product: IProduct,
-    idCategory: Types.ObjectId
+    category: ICategory
   ): Promise<IProduct> {
-    const productModel = new ProductModel({
-      shop: user.shop?._id,
-      name: product.name,
-      description: product.description,
-      price: product.price || 0,
-      quantity: product.quantity || 0,
-      category: idCategory,
-    });
-    await productModel.save();
-    return productModel.toObject();
+    const productModel = new ProductModel();
+    Object.assign(productModel, product);
+    productModel.category = category;
+    productModel.shop = user.shop;
+    await this.repository.save(productModel);
+    return productModel;
   }
 
   async list(user: IUser) {
-    return ProductModel.find({ shop: user.shop?._id, status: true })
-      .populate("category")
-      .exec();
+    return this.repository.find({
+      where: {
+        shop: user.shop,
+        status: true,
+      },
+    });
   }
 
-  async findOne(user: IUser, id: Types.ObjectId) {
-    return ProductModel.findOne({
-      _id: id,
-      shop: user.shop?._id,
-      status: true,
-    })
-      .populate("category")
-      .exec();
+  async findOne(user: IUser, id: number) {
+    return this.repository.findOne({
+      where: {
+        id,
+        shop: user.shop,
+        status: true,
+      },
+      relations: ["category"],
+    });
   }
 
-  async update(user: IUser, id: Types.ObjectId, product: IProduct) {
-    return ProductModel.updateOne({ _id: id, shop: user.shop?._id }, product, {
-      new: true,
-    }).exec();
+  async update(id: number, product: IProduct) {
+    return this.repository.update(id, product);
   }
 
-  async delete(user: IUser, id: Types.ObjectId) {
-    return ProductModel.updateOne(
-      { _id: id, shop: user.shop?._id },
-      { status: false },
-      {
-        new: true,
-      }
-    ).exec();
+  async delete(id: number) {
+    return this.repository.update(id, { status: false });
   }
 
-  async listByCategory(user: IUser, idCategory: Types.ObjectId) {
-    return ProductModel.find({
-      shop: user.shop?._id,
-      category: idCategory,
-      status: true,
+  async listByCategory(user: IUser, categoryId: number) {
+    return this.repository.find({
+      where: {
+        shop: user.shop,
+        status: true,
+        categoryId,
+      },
     });
   }
 }

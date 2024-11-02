@@ -8,36 +8,19 @@ import {
   JoinColumn,
 } from "typeorm";
 import Shop from "./Shop";
-import { Role } from "../interfaces/IUser";
+import Product from "./Product";
+import Order from "./Order";
 
 @Entity()
-class User {
+class OrderProduct {
   @PrimaryGeneratedColumn()
     id!: number;
-
-  @Column({ type: "varchar", length: 255 })
-    name!: string;
-
-  @Column({ type: "varchar", length: 255 })
-    lastname!: string;
-
-  @Column({ type: "varchar", length: 255 })
-    email?: string;
-
-  @Column({ type: "varchar", length: 255 })
-    password?: string;
 
   @Column({ type: "boolean", default: true })
     status!: boolean;
 
-  @Column({ type: "varchar", length: 9, nullable: true })
-    phone!: string;
-
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt!: Date;
-
-  @Column({ type: "varchar", length: 255, nullable: false, default: "BUYER" })
-    role?: Role;
 
   @UpdateDateColumn({
     type: "timestamp",
@@ -46,12 +29,34 @@ class User {
   })
     updatedAt!: Date;
 
-  @ManyToOne(() => Shop, (shop) => shop.users)
+  @Column({ type: "int", default: 0 })
+    total!: number;
+
+  @Column({ type: "int", default: 0 })
+    price!: number;
+
+  @Column({ type: "int", default: 0 })
+    quantity!: number;
+
+  @ManyToOne(() => Shop, (shop) => shop.orderProducts)
   @JoinColumn({ name: "shopId" })
     shop?: Shop;
 
   @Column({ type: "int" })
     shopId?: number;
+
+  @JoinColumn({ name: "productId" })
+    product?: Product;
+
+  @Column({ type: "int" })
+    productId?: number;
+
+  @JoinColumn({ name: "orderId" })
+    order?: Order;
+
+  @Column({ type: "int" })
+    orderId?: number;
 }
 
-export default User;
+export default OrderProduct;
+

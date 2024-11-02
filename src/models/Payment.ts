@@ -4,23 +4,17 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
   OneToMany,
 } from "typeorm";
-import Shop from "./Shop";
-import Product from "./Product";
+import Order from "./Order";
 
 @Entity()
-class Category {
+class Payment {
   @PrimaryGeneratedColumn()
     id!: number;
 
   @Column({ type: "varchar", length: 255 })
-    name!: string;
-
-  @Column({ type: "varchar", length: 255 })
-    description!: string;
+    type!: string;
 
   @Column({ type: "boolean", default: true })
     status!: boolean;
@@ -35,15 +29,9 @@ class Category {
   })
     updatedAt!: Date;
 
-  @ManyToOne(() => Shop, (shop) => shop.categories)
-  @JoinColumn({ name: "shopId" })
-    shop?: Shop;
-
-  @Column({ type: "int" })
-    shopId?: number;
-
-  @OneToMany(() => Product, (product) => product.category)
-    products?: Product[];
+  @OneToMany(() => Order, (order) => order.payment)
+    orders?: Order[];
 }
 
-export default Category;
+export default Payment;
+

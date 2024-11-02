@@ -1,7 +1,6 @@
 import pino from "pino";
 import { ICategory, IUser } from "../interfaces";
 import { CategoryRepository } from "../repositories";
-import { Types } from "mongoose";
 
 class CategoryService {
   logger;
@@ -34,7 +33,7 @@ class CategoryService {
     return this.repository.list(user);
   }
 
-  async findOne(user: IUser, id: Types.ObjectId): Promise<ICategory> {
+  async findOne(user: IUser, id: number): Promise<ICategory> {
     if (!user.shop) {
       throw {
         message: "Usuario no cuenta con tienda",
@@ -48,35 +47,20 @@ class CategoryService {
         code: 400,
       };
     }
-    return category;
+    return category as ICategory;
   }
 
-  async update(user: IUser, id: Types.ObjectId, category: ICategory) {
-    if (!user.shop) {
-      throw {
-        message: "Usuario no cuenta con tienda",
-        code: 400,
-      };
-    }
-    await this.repository.update(user, id, category);
-    const newCategory = await this.repository.findOne(user, id);
-    if (!newCategory) {
-      throw {
-        message: "Categoria no existe",
-        code: 400,
-      };
-    }
+  async update(user: IUser, id: number, category: ICategory) {
+    const categorySearched = await this.findOne(user, id);
+    await this.repository.update(id, category);
+    const newCategory = Object.assign(categorySearched, category);
     return newCategory;
   }
 
-  async delete(user: IUser, id: Types.ObjectId) {
-    if (!user.shop) {
-      throw {
-        message: "Usuario no cuenta con tienda",
-        code: 400,
-      };
-    }
-    await this.repository.delete(user, id);
+  async delete(user: IUser, id: number) {
+    await this.findOne(user, id);
+
+    await this.repository.delete(id);
     return {
       message: "Se elimino la categoria",
     };

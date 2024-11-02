@@ -1,28 +1,63 @@
-import { Schema, model } from "mongoose";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from "typeorm";
+import User from "./User";
+import Category from "./Category";
+import Product from "./Product";
+import Order from "./Order";
+import OrderProduct from "./OrderProduct";
 
-const ShopSchema = new Schema({
-  name: {
-    type: String,
-    required: [true, "El nombre es obligatorio"],
-  },
-  address: {
-    type: String,
-    required: [true, "El apellido es obligatorio"],
-  },
-  phone: {
-    type: Number,
-    required: [true, "El telefono es obligatorio"],
-  },
-  status: {
-    type: Boolean,
-    default: true,
-  },
-});
+@Entity()
+class Shop {
+  @PrimaryGeneratedColumn() id!: number;
 
-ShopSchema.methods.toJSON = function () {
-  const shop = this.toObject();
-  delete shop.__v;
-  return shop;
-};
+  @Column({ type: "varchar", length: 255 })
+    name!: string;
 
-export default model("Shop", ShopSchema);
+  @Column({ type: "varchar", length: 255, nullable: true })
+    address?: string;
+
+  @Column({ type: "varchar", length: 9, nullable: true })
+    phone?: string;
+
+  @Column({ type: "varchar", length: 100, nullable: true })
+    email?: string;
+
+  @Column({ type: "varchar", length: 11, nullable: true })
+    ruc?: string;
+
+  @Column({ type: "boolean", default: true })
+    status!: boolean;
+
+  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    createdAt!: Date;
+
+  @UpdateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+    onUpdate: "CURRENT_TIMESTAMP",
+  })
+    updatedAt!: Date;
+
+  @OneToMany(() => User, (user) => user.shop)
+    users?: User[];
+
+  @OneToMany(() => Category, (category) => category.shop)
+    categories?: Category[];
+
+  @OneToMany(() => Product, (category) => category.shop)
+    products?: Product[];
+
+  @OneToMany(() => Order, (order) => order.shop)
+    orders?: Order[];
+
+  @OneToMany(() => OrderProduct, (orderProduct) => orderProduct.shop)
+    orderProducts?: OrderProduct[];
+}
+
+export default Shop;
