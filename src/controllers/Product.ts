@@ -34,9 +34,9 @@ class ProductController {
   async list(req: CustomRequest, res: Response) {
     try {
       this.logger.info("-- Request --");
-      this.logger.info(req.body);
-      const user = req.user!;
-      const response = await this.service.list(user);
+      this.logger.info(req.params);
+      const shopId = Number(req.params.shopId);
+      const response = await this.service.list(shopId);
       res.json(response);
     } catch (error) {
       sendError(res, error);
@@ -47,9 +47,9 @@ class ProductController {
     try {
       this.logger.info("-- Request --");
       this.logger.info(req.params);
-      const user = req.user!;
       const productId = Number(req.params.id);
-      const response = await this.service.findOne(user, productId);
+      const shopId = Number(req.params.shopId);
+      const response = await this.service.findOne(productId, shopId);
       res.json(response);
     } catch (error) {
       sendError(res, error);
@@ -86,9 +86,9 @@ class ProductController {
     try {
       this.logger.info("-- Request --");
       this.logger.info(req.params);
-      const user = req.user!;
+      const shopId = Number(req.params.shopId);
       const categoryId = Number(req.params.id);
-      const response = await this.service.listByCategory(user, categoryId);
+      const response = await this.service.listByCategory(categoryId, shopId);
       res.json(response);
     } catch (error) {
       sendError(res, error);

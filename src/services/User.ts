@@ -1,7 +1,8 @@
 import pino from "pino";
-import { IRegister } from "../interfaces";
+import { IRegister, IUser } from "../interfaces";
 import { ShopRepository, UserRepository } from "../repositories";
 import { hashValue } from "../utils/bcrypt-helper";
+import generateJWT from "../utils/jwt-helper";
 
 class UserService {
   logger;
@@ -16,17 +17,8 @@ class UserService {
   }
 
   async register(user: IRegister) {
-    const shopExists = await this.shopRepository.findOne(user.shopId);
-    if (!shopExists) {
-      throw {
-        message: "Tienda no existe",
-        code: 404,
-      };
-    }
-
     const userExists = await this.userRepository.findByEmail(
-      user.email,
-      shopExists
+      user.email
     );
     if (userExists) {
       throw {
@@ -38,8 +30,17 @@ class UserService {
     const newUser = user;
     newUser.password = hashValue(newUser.password);
 
-    const userRepo = await this.userRepository.create(newUser, shopExists);
+    const userRepo = await this.userRepository.create(newUser);
+    delete userRepo.password;
     return userRepo;
+  }
+
+  async getInfo(user: IUser) {
+    const token = await generateJWT(user.id);
+    return {
+      ...user,
+      token,
+    }
   }
 }
 

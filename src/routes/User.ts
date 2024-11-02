@@ -25,12 +25,6 @@ router.post(
   controller.register
 );
 
-router.get(
-  "/get-info",
-  [
-    validateJWT,
-  ],
-  controller.getInfo
-)
+router.get("/get-info", [validateJWT, ValidateMiddleware], controller.getInfo);
 
 export default router;

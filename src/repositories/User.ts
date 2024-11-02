@@ -14,38 +14,40 @@ class UserRepository {
     this.repository = AppDataSouce.getRepository(UserModel);
   }
 
-  async create(user: IRegister, shop: IShop) {
+  async create(user: IRegister) {
     const newUser = new UserModel();
     Object.assign(newUser, user);
-    newUser.shop = shop;
     newUser.role = user.role ?? RoleEnum.BUYER;
     await this.repository.save(newUser);
     return newUser;
   }
 
-  async findByEmail(email: string, shop: IShop) {
+  async findByEmail(email: string) {
     return this.repository.findOne({
       where: {
         status: true,
         email,
-        shop,
-      },
-    });
-  }
-
-  async getById(id: number, shopId: number) {
-    return this.repository.findOne({
-      where: {
-        shopId,
-        id,
-        status: true,
       },
       relations: ["shop"],
     });
   }
 
+  async getById(id: number) {
+    const user = await this.repository.findOne({
+      where: {
+        id,
+        status: true,
+      },
+      relations: ["shop"],
+    });
+    if (user) {
+      delete user.password;
+    }
+    return user;
+  }
+
   async assignShop(id: number, shop: IShop) {
-    return this.repository.update(id, { shop });
+    return this.repository.update(id, { shop, role: RoleEnum.VENDOR });
   }
 }
 

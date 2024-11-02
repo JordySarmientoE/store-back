@@ -17,14 +17,7 @@ class AuthService {
   }
 
   async login(auth: IAuth) {
-    const shop = await this.shopRepository.findOne(auth.shopId);
-    if (!shop) {
-      throw {
-        message: "Tienda no existe",
-        code: 400,
-      };
-    }
-    const user = await this.userRepository.findByEmail(auth.email, shop);
+    const user = await this.userRepository.findByEmail(auth.email);
     if (!user) {
       throw {
         message: "Usuario / Password no son correctos",
@@ -40,7 +33,7 @@ class AuthService {
       };
     }
 
-    const token = await generateJWT(user.id, user.shopId!);
+    const token = await generateJWT(user.id);
 
     return { ...user, token };
   }

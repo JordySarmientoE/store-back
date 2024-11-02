@@ -4,14 +4,15 @@ import { ShopController } from "../controllers";
 import { ValidateMiddleware } from "../middlewares";
 import validateJWT from "../middlewares/validateJWT";
 import { ValidateAdmin } from "../middlewares/validateRole";
+import { validateShopId } from "../middlewares/commonValidations";
 const router = Router();
 const controller = new ShopController();
 
 router.post(
   "/create",
   [
-    //validateJWT,
-    //ValidateAdmin,
+    validateJWT,
+    ValidateAdmin,
     check("name", "El nombre es obligatorio").not().isEmpty(),
     check("address", "La direccion es obligatoria").not().isEmpty(),
     check("phone", "El telefono es obligatorio")
@@ -36,11 +37,11 @@ router.post(
   [
     validateJWT,
     ValidateAdmin,
-    check("user", "El nuevo usuario es obligatorio")
+    check("userId", "El userId, nuevo usuario es obligatorio")
       .not()
       .isEmpty()
-      .isMongoId()
-      .withMessage("El nuevo usuario debe ser un mongo id"),
+      .isNumeric(),
+    ...validateShopId(),
     ValidateMiddleware,
   ],
   controller.assignShop

@@ -2,9 +2,9 @@ import IShop from "./IShop";
 
 export type Role = RoleEnum.ADMIN | RoleEnum.BUYER | RoleEnum.VENDOR;
 export enum RoleEnum {
-  "ADMIN",
-  "BUYER",
-  "VENDOR"
+  ADMIN = "ADMIN",
+  BUYER = "BUYER",
+  VENDOR = "VENDOR",
 }
 
 export default interface IUser {

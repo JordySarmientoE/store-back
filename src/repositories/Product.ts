@@ -25,20 +25,20 @@ class ProductRepository {
     return productModel;
   }
 
-  async list(user: IUser) {
+  async list(shopId: number) {
     return this.repository.find({
       where: {
-        shop: user.shop,
+        shopId,
         status: true,
       },
     });
   }
 
-  async findOne(user: IUser, id: number) {
+  async findOne(productId: number, shopId: number) {
     return this.repository.findOne({
       where: {
-        id,
-        shop: user.shop,
+        id: productId,
+        shopId,
         status: true,
       },
       relations: ["category"],
@@ -53,10 +53,10 @@ class ProductRepository {
     return this.repository.update(id, { status: false });
   }
 
-  async listByCategory(user: IUser, categoryId: number) {
+  async listByCategory(categoryId: number, shopId: number) {
     return this.repository.find({
       where: {
-        shop: user.shop,
+        shopId,
         status: true,
         categoryId,
       },

@@ -1,6 +1,7 @@
 import pino from "pino";
-import { IUser, IShop } from "../interfaces";
+import { IShop } from "../interfaces";
 import { ShopRepository, UserRepository } from "../repositories";
+import { RoleEnum } from "../interfaces/IUser";
 
 class ShopService {
   logger;
@@ -18,18 +19,32 @@ class ShopService {
     return newShop;
   }
 
-  async assignShop(user: IUser, newUser: number) {
-    if (!user.shop) {
+  async assignShop(userId: number, shopId: number) {
+    const user = await this.userRepository.getById(userId);
+    if (user?.role === RoleEnum.ADMIN) {
       throw {
-        message: "Usuario no cuenta con tienda",
+        message: "El usuario no se le puede asignar una tienda",
         code: 400,
       };
     }
-    const userShop = await this.userRepository.assignShop(
-      newUser,
-      user.shop
+
+    if (user?.shop) {
+      throw {
+        message: "El usuario ya cuenta con una tienda",
+        code: 400,
+      };
+    }
+    const shop = await this.shopRepository.findOne(shopId);
+    if (!shop) {
+      throw {
+        message: "Tienda no existe",
+        code: 400,
+      };
+    }
+    await this.userRepository.assignShop(
+      userId,
+      shop
     );
-    return userShop;
   }
 }
 

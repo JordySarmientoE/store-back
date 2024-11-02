@@ -33,7 +33,7 @@ class Product {
   @Column({ type: "int", default: 0 })
     quantity!: number;
 
-  @Column({ type: "int", default: 0 })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
     price!: number;
 
   @UpdateDateColumn({

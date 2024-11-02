@@ -32,9 +32,9 @@ class CategoryController {
   async list(req: CustomRequest, res: Response) {
     try {
       this.logger.info("-- Request --");
-      this.logger.info(req.body);
-      const user = req.user!;
-      const response = await this.service.list(user);
+      this.logger.info(req.params);
+      const shopId = Number(req.params.shopId);
+      const response = await this.service.list(shopId);
       res.json(response);
     } catch (error) {
       sendError(res, error);
@@ -45,9 +45,9 @@ class CategoryController {
     try {
       this.logger.info("-- Request --");
       this.logger.info(req.params);
-      const user = req.user!;
       const categoryId = Number(req.params.id);
-      const response = await this.service.findOne(user, categoryId);
+      const shopId = Number(req.params.shopId);
+      const response = await this.service.findOne(categoryId, shopId);
       res.json(response);
     } catch (error) {
       sendError(res, error);

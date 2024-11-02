@@ -29,9 +29,11 @@ class ShopController {
     try {
       this.logger.info("-- Request --");
       this.logger.info(req.body);
-      const user = req.user!;
-      const response = await this.service.assignShop(user, req.body.user);
-      res.json(response);
+      const { userId, shopId } = req.body;
+      await this.service.assignShop(userId, shopId);
+      res.status(201).json({
+        message: "Asignacion exitosa",
+      });
     } catch (error) {
       sendError(res, error);
     }

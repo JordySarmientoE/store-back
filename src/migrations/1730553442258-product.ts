@@ -1,4 +1,10 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey, TableIndex } from "typeorm";
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+  TableIndex,
+} from "typeorm";
 
 export class CreateProductTable1676310400000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -42,8 +48,10 @@ export class CreateProductTable1676310400000 implements MigrationInterface {
           },
           {
             name: "price",
-            type: "int",
+            type: "decimal",
             default: 0,
+            precision: 10,
+            scale: 2,
           },
           {
             name: "updatedAt",
@@ -97,11 +105,15 @@ export class CreateProductTable1676310400000 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     const table = await queryRunner.getTable("product");
-    
+
     if (table) {
-      const foreignKeyShop = table.foreignKeys.find(fk => fk.columnNames.indexOf("shopId") !== -1);
-      const foreignKeyCategory = table.foreignKeys.find(fk => fk.columnNames.indexOf("categoryId") !== -1);
-      
+      const foreignKeyShop = table.foreignKeys.find(
+        (fk) => fk.columnNames.indexOf("shopId") !== -1
+      );
+      const foreignKeyCategory = table.foreignKeys.find(
+        (fk) => fk.columnNames.indexOf("categoryId") !== -1
+      );
+
       if (foreignKeyShop) {
         await queryRunner.dropForeignKey("product", foreignKeyShop);
       }

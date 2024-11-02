@@ -36,8 +36,10 @@ export class CreateOrderProductTable1676310800000 implements MigrationInterface 
           },
           {
             name: "price",
-            type: "int",
+            type: "decimal",
             default: 0,
+            precision: 10,
+            scale: 2,
           },
           {
             name: "quantity",

@@ -26,7 +26,7 @@ const validateJWT = async (
       });
     }
 
-    const usuario = await userRepository.getById(decoded.id, decoded.shopId);
+    const usuario = await userRepository.getById(decoded.id);
 
     if (!usuario || !usuario.status) {
       return res.status(401).json({
@@ -38,7 +38,7 @@ const validateJWT = async (
 
     next();
   } catch (err) {
-    res.status(401).json({
+    return res.status(401).json({
       msg: "Token no válido",
     });
   }

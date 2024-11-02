@@ -22,20 +22,20 @@ class CategoryRepository {
     return categoryModel;
   }
 
-  async list(user: IUser) {
+  async list(shopId: number) {
     return this.repository.find({
       where: {
-        shop: user.shop,
         status: true,
+        shopId,
       },
     });
   }
 
-  async findOne(user: IUser, id: number) {
+  async findOne(categoryId: number, shopId: number) {
     return this.repository.findOne({
       where: {
-        shop: user.shop,
-        id,
+        shopId,
+        id: categoryId,
         status: true,
       },
       relations: ["products"],

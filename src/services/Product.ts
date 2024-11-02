@@ -22,30 +22,18 @@ class ProductService {
         code: 400,
       };
     }
-    const category = await this.categoryService.findOne(user, categoryId);
+    const category = await this.categoryService.findOne(categoryId, user.shop!.id);
     const newProduct = await this.repository.create(user, product, category);
     newProduct.category = category;
     return newProduct;
   }
 
-  async list(user: IUser) {
-    if (!user.shop) {
-      throw {
-        message: "Usuario no cuenta con tienda",
-        code: 400,
-      };
-    }
-    return this.repository.list(user);
+  async list(shopId: number) {
+    return this.repository.list(shopId);
   }
 
-  async findOne(user: IUser, id: number) {
-    if (!user.shop) {
-      throw {
-        message: "Usuario no cuenta con tienda",
-        code: 400,
-      };
-    }
-    const product = await this.repository.findOne(user, id);
+  async findOne(productId: number, shopId: number) {
+    const product = await this.repository.findOne(productId, shopId);
     if (!product) {
       throw {
         message: "Producto no existe",
@@ -56,7 +44,7 @@ class ProductService {
   }
 
   async update(user: IUser, id: number, product: IProduct) {
-    const newProduct = await this.findOne(user, id);
+    const newProduct = await this.findOne(id, user.shop!.id);
     await this.repository.update(id, product);
     if (!newProduct) {
       throw {
@@ -68,21 +56,15 @@ class ProductService {
   }
 
   async delete(user: IUser, id: number) {
-    await this.findOne(user, id);
+    await this.findOne(id, user.shop!.id);
     await this.repository.delete(id);
     return {
       message: "Se elimino el producto",
     };
   }
 
-  async listByCategory(user: IUser, categoryId: number) {
-    if (!user.shop) {
-      throw {
-        message: "Usuario no cuenta con tienda",
-        code: 400,
-      };
-    }
-    const category = await this.repository.listByCategory(user, categoryId);
+  async listByCategory(categoryId: number, shopId: number) {
+    const category = await this.repository.listByCategory(categoryId, shopId);
     if (!category) {
       throw {
         message: "Categoria no existe",
