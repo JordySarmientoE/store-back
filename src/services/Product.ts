@@ -22,7 +22,10 @@ class ProductService {
         code: 400,
       };
     }
-    const category = await this.categoryService.findOne(categoryId, user.shop!.id);
+    const category = await this.categoryService.findOne(
+      categoryId,
+      user.shop!.id
+    );
     const newProduct = await this.repository.create(user, product, category);
     newProduct.category = category;
     return newProduct;
@@ -41,6 +44,17 @@ class ProductService {
       };
     }
     return product;
+  }
+
+  async findMany(productIds: number[], shopId: number) {
+    const products = await this.repository.findMany(productIds, shopId);
+    if (productIds.length !== products.length) {
+      throw {
+        message: "Algún producto no existe",
+        code: 400,
+      };
+    }
+    return products;
   }
 
   async update(user: IUser, id: number, product: IProduct) {
@@ -72,6 +86,13 @@ class ProductService {
       };
     }
     return category;
+  }
+
+  async updateMany(products: IProduct[]) {
+    const promises = products.map((product) =>
+      this.repository.update(product.id, product)
+    );
+    await Promise.all(promises);
   }
 }
 

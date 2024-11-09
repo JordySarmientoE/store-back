@@ -2,6 +2,7 @@ import pino from "pino";
 import { ProductModel } from "../models";
 import { ICategory, IProduct, IUser } from "../interfaces";
 import AppDataSouce from "../database/datasource";
+import { In } from "typeorm";
 
 class ProductRepository {
   logger;
@@ -42,6 +43,16 @@ class ProductRepository {
         status: true,
       },
       relations: ["category"],
+    });
+  }
+
+  async findMany(productIds: number[], shopId: number) {
+    return this.repository.find({
+      where: {
+        id: In(productIds),
+        shopId,
+        status: true,
+      },
     });
   }
 

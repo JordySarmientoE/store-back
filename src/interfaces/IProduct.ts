@@ -1,5 +1,5 @@
 import { ICategory, IShop } from ".";
-import IInventoryMovent from "./IInventoryMovement";
+import IInventoryMovement from "./IInventoryMovement";
 import IOrderProduct from "./IOrderProduct";
 
 export default interface IProduct {
@@ -12,7 +12,7 @@ export default interface IProduct {
   price: number;
   shop?: IShop;
   orderProducts?: IOrderProduct[];
-  inventoryMovements?: IInventoryMovent[];
+  inventoryMovements?: IInventoryMovement[];
   createdAt: Date;
   updatedAt: Date;
 }

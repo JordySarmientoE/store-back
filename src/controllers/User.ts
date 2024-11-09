@@ -12,6 +12,7 @@ class UserController {
     this.logger = pino();
     this.service = new UserService();
     this.register = this.register.bind(this);
+    this.getInfo = this.getInfo.bind(this);
   }
 
   async register(req: Request, res: Response) {
@@ -26,7 +27,15 @@ class UserController {
   }
 
   async getInfo(req: CustomRequest, res: Response) {
-    res.json(req.user);
+    try {
+      this.logger.info("-- Request --");
+      this.logger.info(req.body);
+      const { user } = req;
+      const response = await this.service.getInfo(user!);
+      res.json(response);
+    } catch (error) {
+      sendError(res, error);
+    }
   }
 }
 

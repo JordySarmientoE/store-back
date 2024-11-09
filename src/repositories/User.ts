@@ -1,8 +1,9 @@
 import pino from "pino";
 import { UserModel } from "../models";
-import { IRegister, IShop } from "../interfaces";
+import { IShop } from "../interfaces";
 import AppDataSouce from "../database/datasource";
 import { RoleEnum } from "../interfaces/IUser";
+import { IRegister } from "../interfaces/IAuth";
 
 class UserRepository {
   logger;

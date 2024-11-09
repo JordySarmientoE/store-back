@@ -1,4 +1,9 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from "typeorm";
 
 export class CreateOrderTable1676310700000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -31,8 +36,10 @@ export class CreateOrderTable1676310700000 implements MigrationInterface {
           },
           {
             name: "total",
-            type: "int",
+            type: "decimal",
             default: 0,
+            precision: 10,
+            scale: 2,
           },
           {
             name: "shopId",
@@ -40,9 +47,10 @@ export class CreateOrderTable1676310700000 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: "paymentId",
-            type: "int",
-            isNullable: true,
+            name: "payment",
+            type: "varchar",
+            length: "255",
+            isNullable: false,
           },
         ],
       }),
@@ -58,25 +66,15 @@ export class CreateOrderTable1676310700000 implements MigrationInterface {
         onDelete: "SET NULL",
       })
     );
-
-    await queryRunner.createForeignKey(
-      "order",
-      new TableForeignKey({
-        columnNames: ["paymentId"],
-        referencedColumnNames: ["id"],
-        referencedTableName: "payment",
-        onDelete: "SET NULL",
-      })
-    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     const table = await queryRunner.getTable("order");
-    const shopForeignKey = table!.foreignKeys.find((fk) => fk.columnNames.indexOf("shopId") !== -1);
-    const paymentForeignKey = table!.foreignKeys.find((fk) => fk.columnNames.indexOf("paymentId") !== -1);
+    const shopForeignKey = table!.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf("shopId") !== -1
+    );
 
     await queryRunner.dropForeignKey("order", shopForeignKey!);
-    await queryRunner.dropForeignKey("order", paymentForeignKey!);
     await queryRunner.dropTable("order");
   }
 }

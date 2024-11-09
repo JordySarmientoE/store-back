@@ -7,6 +7,8 @@ import {
   AuthRoutes,
   CategoryRoutes,
   ProductRoutes,
+  InventorymovementRoutes,
+  OrderRoutes,
 } from "../routes";
 import dbConnection from "../database/config";
 
@@ -46,6 +48,8 @@ class Server {
     this.app.use("/api/auth", AuthRoutes);
     this.app.use("/api/category", CategoryRoutes);
     this.app.use("/api/product", ProductRoutes);
+    this.app.use("/api/inventory-movement", InventorymovementRoutes);
+    this.app.use("/api/order", OrderRoutes);
   }
 }
 

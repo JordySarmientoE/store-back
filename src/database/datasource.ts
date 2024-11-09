@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { CategoryModel, OrderModel, OrderProductModel, PaymentModel, ProductModel, ShopModel, UserModel } from "../models";
+import { CategoryModel, OrderModel, OrderProductModel, ProductModel, ShopModel, UserModel } from "../models";
 import InventoryMovement from "../models/InventoryMovement";
 
 const AppDataSouce = new DataSource({
@@ -12,7 +12,7 @@ const AppDataSouce = new DataSource({
   database: process.env.DB_NAME || "postgres",
   synchronize: false,
   logging: true,
-  entities: [ShopModel, UserModel, CategoryModel, ProductModel, OrderModel, OrderProductModel, PaymentModel, InventoryMovement],
+  entities: [ShopModel, UserModel, CategoryModel, ProductModel, OrderModel, OrderProductModel, InventoryMovement],
   migrations: ["dist/migrations/*.js"],
 });
 

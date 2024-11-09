@@ -3,7 +3,12 @@ import IShop from "./IShop";
 
 export type MovementType = "IN" | "OUT";
 
-export default interface IInventoryMovent {
+export enum MovementTypeEnum {
+  IN = "IN",
+  OUT = "OUT",
+}
+
+export default interface IInventoryMovement {
   id: number;
   status: boolean;
   shop?: IShop;
@@ -12,4 +17,9 @@ export default interface IInventoryMovent {
   product?: IProduct;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface IMoveInventory {
+  quantity: number;
+  productId: number;
 }

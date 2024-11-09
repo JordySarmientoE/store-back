@@ -10,7 +10,7 @@ import {
 } from "typeorm";
 import Shop from "./Shop";
 import OrderProduct from "./OrderProduct";
-import Payment from "./Payment";
+import { Payment } from "../interfaces/IOrder";
 
 @Entity()
 class Order {
@@ -30,7 +30,7 @@ class Order {
   })
     updatedAt!: Date;
 
-  @Column({ type: "int", default: 0 })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
     total!: number;
 
   @ManyToOne(() => Shop, (shop) => shop.orders)
@@ -43,12 +43,8 @@ class Order {
   @OneToMany(() => OrderProduct, (orderProduct) => orderProduct.order)
     orderProducts?: OrderProduct[];
 
-  @ManyToOne(() => Payment, (payment) => payment.orders)
-    @JoinColumn({ name: "paymentId" })
+  @Column({ type: "varchar", length: 255 })
     payment?: Payment;
-  
-  @Column({ type: "int" })
-    paymentId?: number;
 }
 
 export default Order;

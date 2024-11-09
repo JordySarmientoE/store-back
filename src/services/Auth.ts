@@ -1,5 +1,5 @@
 import pino from "pino";
-import { ShopRepository, UserRepository } from "../repositories";
+import { UserRepository } from "../repositories";
 import IAuth from "../interfaces/IAuth";
 import { hashValidate } from "../utils/bcrypt-helper";
 import generateJWT from "../utils/jwt-helper";
@@ -7,12 +7,10 @@ import generateJWT from "../utils/jwt-helper";
 class AuthService {
   logger;
   userRepository;
-  shopRepository;
 
   constructor() {
     this.logger = pino();
     this.userRepository = new UserRepository();
-    this.shopRepository = new ShopRepository();
     this.login = this.login.bind(this);
   }
 

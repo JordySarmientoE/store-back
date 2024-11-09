@@ -4,7 +4,6 @@ import CategoryModel from "./Category";
 import ProductModel from "./Product";
 import OrderModel from "./Order";
 import OrderProductModel from "./OrderProduct";
-import PaymentModel from "./Payment";
 import InventoryMovementModel from "./InventoryMovement";
 
 export {
@@ -14,6 +13,5 @@ export {
   ProductModel,
   OrderModel,
   OrderProductModel,
-  PaymentModel,
   InventoryMovementModel,
 };
