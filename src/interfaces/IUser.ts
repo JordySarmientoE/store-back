@@ -1,3 +1,4 @@
+import IOrder from "./IOrder";
 import IShop from "./IShop";
 
 export type Role = RoleEnum.ADMIN | RoleEnum.BUYER | RoleEnum.VENDOR;
@@ -19,4 +20,5 @@ export default interface IUser {
   createdAt: Date;
   updatedAt: Date;
   role?: Role;
+  orders?: IOrder[];
 }

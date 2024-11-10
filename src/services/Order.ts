@@ -1,7 +1,7 @@
 import pino from "pino";
 import { OrderRepository } from "../repositories";
-import { InventoryMovementService, OrderProductService } from ".";
-import { IUser } from "../interfaces";
+import { InventoryMovementService, OrderProductService, ShopService } from ".";
+import { IShop, IUser } from "../interfaces";
 import IInventoryMovement, {
   IMoveInventory,
 } from "../interfaces/IInventoryMovement";
@@ -12,6 +12,7 @@ class OrderService {
   repository;
   inventoryService;
   orderProductService;
+  shopService;
 
   constructor() {
     this.logger = pino();
@@ -19,6 +20,7 @@ class OrderService {
     this.inventoryService = new InventoryMovementService();
     this.save = this.save.bind(this);
     this.orderProductService = new OrderProductService();
+    this.shopService = new ShopService();
   }
 
   getTotalOrder(movements: IInventoryMovement[]) {
@@ -39,14 +41,15 @@ class OrderService {
   }
 
   async save(user: IUser, body: ISaveOrder) {
-    const { order, payment } = body;
+    const { order, payment, shopId } = body;
+    const shop = await this.shopService.getShop(shopId);
     const orderBody = this.createOrderBody(order);
     const products = await this.inventoryService.validateInventory(
-      user,
+      shopId,
       orderBody
     );
     const movements = await this.inventoryService.createMovements(
-      user,
+      shop,
       orderBody,
       products
     );
@@ -54,10 +57,10 @@ class OrderService {
     await this.inventoryService.updateStockProducts(orderBody, products);
 
     const total = this.getTotalOrder(movements);
-    const newOrder = await this.createOrder(total, payment, user);
+    const newOrder = await this.createOrder(total, payment, shop, user);
 
     const orderProducts = await this.orderProductService.createOrderProducts(
-      user,
+      shop,
       newOrder,
       movements
     );
@@ -66,11 +69,12 @@ class OrderService {
     return newOrder;
   }
 
-  async createOrder(total: number, payment: Payment, user: IUser) {
+  async createOrder(total: number, payment: Payment, shop: IShop, user: IUser) {
     const order = {
       total,
       payment,
-      shop: user.shop!,
+      shop,
+      user,
     } as IOrder;
 
     const newOrder = await this.repository.create(order);

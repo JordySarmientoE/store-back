@@ -11,6 +11,7 @@ import {
 import Shop from "./Shop";
 import OrderProduct from "./OrderProduct";
 import { Payment } from "../interfaces/IOrder";
+import User from "./User";
 
 @Entity()
 class Order {
@@ -45,6 +46,13 @@ class Order {
 
   @Column({ type: "varchar", length: 255 })
     payment?: Payment;
+
+  @ManyToOne(() => User, (user) => user.orders)
+  @JoinColumn({ name: "userId" })
+    user?: User;
+  
+  @Column({ type: "int" })
+    userId?: number;
 }
 
 export default Order;

@@ -1,6 +1,6 @@
 import pino from "pino";
 import { OrderProductRepository } from "../repositories";
-import { IInventoryMovement, IOrder, IOrderProduct, IUser } from "../interfaces";
+import { IInventoryMovement, IOrder, IOrderProduct, IShop } from "../interfaces";
 
 class OrderProductService {
   logger;
@@ -17,7 +17,7 @@ class OrderProductService {
   }
 
   async createOrderProducts(
-    user: IUser,
+    shop: IShop,
     order: IOrder,
     movements: IInventoryMovement[]
   ) {
@@ -25,7 +25,7 @@ class OrderProductService {
     for (const movement of movements) {
       const { quantity, product } = movement;
       const orderProduct = {
-        shop: user.shop,
+        shop,
         order,
         product: product,
         quantity: quantity! * -1,

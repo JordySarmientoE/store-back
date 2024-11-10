@@ -12,6 +12,8 @@ class ShopService {
     this.shopRepository = new ShopRepository();
     this.userRepository = new UserRepository();
     this.register = this.register.bind(this);
+    this.assignShop = this.assignShop.bind(this);
+    this.getShops = this.getShops.bind(this);
   }
 
   async register(shop: IShop) {
@@ -34,6 +36,15 @@ class ShopService {
         code: 400,
       };
     }
+    const shop = await this.getShop(shopId);
+    await this.userRepository.assignShop(userId, shop);
+  }
+
+  async getShops() {
+    return this.shopRepository.list();
+  }
+
+  async getShop(shopId: number) {
     const shop = await this.shopRepository.findOne(shopId);
     if (!shop) {
       throw {
@@ -41,10 +52,7 @@ class ShopService {
         code: 400,
       };
     }
-    await this.userRepository.assignShop(
-      userId,
-      shop
-    );
+    return shop;
   }
 }
 

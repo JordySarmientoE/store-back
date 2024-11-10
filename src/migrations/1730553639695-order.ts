@@ -52,6 +52,11 @@ export class CreateOrderTable1676310700000 implements MigrationInterface {
             length: "255",
             isNullable: false,
           },
+          {
+            name: "userId",
+            type: "int",
+            isNullable: true,
+          },
         ],
       }),
       true
@@ -66,6 +71,16 @@ export class CreateOrderTable1676310700000 implements MigrationInterface {
         onDelete: "SET NULL",
       })
     );
+
+    await queryRunner.createForeignKey(
+      "order",
+      new TableForeignKey({
+        columnNames: ["userId"],
+        referencedColumnNames: ["id"],
+        referencedTableName: "user",
+        onDelete: "SET NULL",
+      })
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -73,8 +88,12 @@ export class CreateOrderTable1676310700000 implements MigrationInterface {
     const shopForeignKey = table!.foreignKeys.find(
       (fk) => fk.columnNames.indexOf("shopId") !== -1
     );
+    const orderForeignKey = table!.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf("userId") !== -1
+    );
 
     await queryRunner.dropForeignKey("order", shopForeignKey!);
+    await queryRunner.dropForeignKey("order", orderForeignKey!);
     await queryRunner.dropTable("order");
   }
 }

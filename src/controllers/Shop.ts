@@ -12,6 +12,8 @@ class ShopController {
     this.service = new ShopService();
     this.register = this.register.bind(this);
     this.assignShop = this.assignShop.bind(this);
+    this.getShops = this.getShops.bind(this);
+    this.getShop = this.getShop.bind(this);
   }
 
   async register(req: CustomRequest, res: Response) {
@@ -34,6 +36,27 @@ class ShopController {
       res.status(201).json({
         message: "Asignacion exitosa",
       });
+    } catch (error) {
+      sendError(res, error);
+    }
+  }
+
+  async getShops(req: CustomRequest, res: Response) {
+    try {
+      const shops = await this.service.getShops();
+      res.status(200).json(shops);
+    } catch (error) {
+      sendError(res, error);
+    }
+  }
+
+  async getShop(req: CustomRequest, res: Response) {
+    try {
+      this.logger.info("-- Request --");
+      this.logger.info(req.params);
+      const shopId = Number(req.params.shopId);
+      const shop = await this.service.getShop(shopId);
+      res.status(200).json(shop);
     } catch (error) {
       sendError(res, error);
     }

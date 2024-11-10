@@ -6,9 +6,11 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 import Shop from "./Shop";
 import { Role } from "../interfaces/IUser";
+import Order from "./Order";
 
 @Entity()
 class User {
@@ -52,6 +54,9 @@ class User {
 
   @Column({ type: "int" })
     shopId?: number;
+
+  @OneToMany(() => Order, (order) => order.user)
+    orders?: Order[];
 }
 
 export default User;

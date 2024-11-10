@@ -6,7 +6,7 @@ import {
 } from "../interfaces/IInventoryMovement";
 import { InventoryMovementRepository } from "../repositories";
 import ProductService from "./Product";
-import { IInventoryMovement, IProduct } from "../interfaces";
+import { IInventoryMovement, IProduct, IShop } from "../interfaces";
 
 class InventoryMovementService {
   logger;
@@ -19,11 +19,11 @@ class InventoryMovementService {
     this.productService = new ProductService();
   }
 
-  async validateInventory(user: IUser, body: IMoveInventory[]) {
+  async validateInventory(shopId: number, body: IMoveInventory[]) {
     const productIds = body.map((product) => product.productId);
     const products = await this.productService.findMany(
       productIds,
-      user.shop!.id
+      shopId
     );
 
     for (const product of products) {
@@ -44,7 +44,7 @@ class InventoryMovementService {
   }
 
   async createMovements(
-    user: IUser,
+    shop: IShop,
     body: IMoveInventory[],
     products: IProduct[]
   ) {
@@ -62,7 +62,7 @@ class InventoryMovementService {
       const inventoryMovement = {
         quantity: productSearched!.quantity,
         product: product,
-        shop: user.shop!,
+        shop,
         movementType,
       } as IInventoryMovement;
 
@@ -88,7 +88,7 @@ class InventoryMovementService {
 
   async moveInventory(user: IUser, body: IMoveInventory) {
     const inventoryMovements = [body];
-    const products = await this.validateInventory(user, inventoryMovements);
+    const products = await this.validateInventory(user.shop!.id, inventoryMovements);
     await this.createMovements(user, inventoryMovements, products);
     await this.updateStockProducts(inventoryMovements, products);
   }

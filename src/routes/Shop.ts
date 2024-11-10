@@ -47,4 +47,12 @@ router.post(
   controller.assignShop
 );
 
+router.get("/", [], controller.getShops);
+
+router.get(
+  "/:shopId",
+  [check("id", "El shopId es numerico").isNumeric()],
+  controller.getShop
+);
+
 export default router;
