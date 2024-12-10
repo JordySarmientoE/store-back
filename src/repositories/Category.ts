@@ -1,15 +1,11 @@
-import pino from "pino";
 import { CategoryModel } from "../models";
 import { ICategory, IUser } from "../interfaces";
 import AppDataSouce from "../database/datasource";
 
 class CategoryRepository {
-  logger;
   repository;
 
   constructor() {
-    this.logger = pino();
-    this.create = this.create.bind(this);
     this.repository = AppDataSouce.getRepository(CategoryModel);
   }
 

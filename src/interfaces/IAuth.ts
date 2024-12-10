@@ -8,8 +8,8 @@ export default interface IAuth {
 export interface IRegister {
     name: string;
     lastname: string;
-    phone: number;
-    password: string;
+    phone: string;
+    password?: string;
     email: string;
     shopId: number;
     role?: Role;

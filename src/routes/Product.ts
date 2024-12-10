@@ -34,15 +34,31 @@ router.post(
   controller.create
 );
 
-router.get("/list/shop/:shopId", [...validateShopId(), ValidateMiddleware], controller.list);
+router.get(
+  "/list/shop/:shopId",
+  [
+    ...validateShopId(),
+    ValidateMiddleware,
+  ],
+  controller.list
+);
+
+router.get(
+  "/list",
+  [
+    validateJWT,
+    ValidateVendor,
+    check("page", "La pagina es obligataria").not().isEmpty(),
+    check("rows", "Las filas es obligatario").not().isEmpty(),
+    ValidateMiddleware,
+  ],
+  controller.listPaginated
+);
 
 router.get(
   "/find/:id/shop/:shopId",
   [
-    check("id", "El id es obligatorio")
-      .not()
-      .isEmpty()
-      .isNumeric(),
+    check("id", "El id es obligatorio").not().isEmpty().isNumeric(),
     ...validateShopId(),
     ValidateMiddleware,
   ],
@@ -56,9 +72,7 @@ router.put(
     ValidateVendor,
     check("name", "El nombre es opcional").optional(),
     check("description", "La descripcion es opcional").optional(),
-    check("category", "La categoria es opcional")
-      .optional()
-      .isNumeric(),
+    check("category", "La categoria es opcional").optional().isNumeric(),
     check("quantity", "La cantidad es opcional")
       .optional()
       .isNumeric()
@@ -67,10 +81,7 @@ router.put(
       .optional()
       .isNumeric()
       .withMessage("El precio es numerico"),
-    check("id", "El id es obligatorio")
-      .not()
-      .isEmpty()
-      .isNumeric(),
+    check("id", "El id es obligatorio").not().isEmpty().isNumeric(),
     ValidateMiddleware,
   ],
   controller.update

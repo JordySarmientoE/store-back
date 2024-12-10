@@ -1,14 +1,13 @@
-import pino from "pino";
 import CustomRequest from "../interfaces/CustomRequest";
 import { Response } from "express";
-import sendError from "../utils/error-helper";
+import sendError, { keyLogger } from "../utils/error-helper";
 import { OrderService } from "../services";
 
 class OrderController {
   logger;
   service;
   constructor() {
-    this.logger = pino();
+    this.logger = keyLogger;
     this.service = new OrderService();
     this.save = this.save.bind(this);
   }

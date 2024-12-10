@@ -1,14 +1,13 @@
 import { Response } from "express";
 import CustomRequest from "../interfaces/CustomRequest";
-import pino from "pino";
 import { ProductService } from "../services";
-import sendError from "../utils/error-helper";
+import sendError, { keyLogger } from "../utils/error-helper";
 
 class ProductController {
   logger;
   service;
   constructor() {
-    this.logger = pino();
+    this.logger = keyLogger;
     this.service = new ProductService();
     this.create = this.create.bind(this);
     this.list = this.list.bind(this);
@@ -16,6 +15,7 @@ class ProductController {
     this.update = this.update.bind(this);
     this.delete = this.delete.bind(this);
     this.listByCategory = this.listByCategory.bind(this);
+    this.listPaginated = this.listPaginated.bind(this);
   }
 
   async create(req: CustomRequest, res: Response) {
@@ -37,6 +37,20 @@ class ProductController {
       this.logger.info(req.params);
       const shopId = Number(req.params.shopId);
       const response = await this.service.list(shopId);
+      res.json(response);
+    } catch (error) {
+      sendError(res, error);
+    }
+  }
+
+  async listPaginated(req: CustomRequest, res: Response) {
+    try {
+      this.logger.info("-- Request --");
+      this.logger.info(req.params);
+      const user = req.user!;
+      const page = Number(req.query.page);
+      const rows = Number(req.query.rows);
+      const response = await this.service.listPaginated(user, page, rows);
       res.json(response);
     } catch (error) {
       sendError(res, error);

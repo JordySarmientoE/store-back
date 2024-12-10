@@ -1,4 +1,3 @@
-import pino from "pino";
 import { UserModel } from "../models";
 import { IShop } from "../interfaces";
 import AppDataSouce from "../database/datasource";
@@ -6,12 +5,9 @@ import { RoleEnum } from "../interfaces/IUser";
 import { IRegister } from "../interfaces/IAuth";
 
 class UserRepository {
-  logger;
   repository;
 
   constructor() {
-    this.logger = pino();
-    this.create = this.create.bind(this);
     this.repository = AppDataSouce.getRepository(UserModel);
   }
 
@@ -49,6 +45,35 @@ class UserRepository {
 
   async assignShop(id: number, shop: IShop) {
     return this.repository.update(id, { shop, role: RoleEnum.VENDOR });
+  }
+
+  async list(page: number, rows: number) {
+    const skip = (page - 1) * rows;
+
+    return this.repository.find({
+      relations: ["shop"],
+      skip,
+      take: rows,
+      order: {
+        id: "ASC",
+      },
+    });
+  }
+
+  async totalUser() {
+    return this.repository.count();
+  }
+
+  async delete(id: number) {
+    return this.repository.update(id, { status: false });
+  }
+
+  async edit(id: number, body: IRegister) {
+    return this.repository.update(id, body);
+  }
+
+  async enable(id: number) {
+    return this.repository.update(id, { status: true });
   }
 }
 

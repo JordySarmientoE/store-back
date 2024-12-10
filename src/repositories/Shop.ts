@@ -33,12 +33,39 @@ class ShopRepository {
     });
   }
 
+  async listPaginated(page: number, rows: number) {
+    const skip = (page - 1) * rows;
+    return this.repository.find({
+      skip,
+      take: rows,
+      order: {
+        id: "ASC",
+      },
+    });
+  }
+
   async findByRuc(ruc: string) {
     return this.repository.findOne({
       where: {
         ruc,
       },
     });
+  }
+
+  async totalShops() {
+    return this.repository.count();
+  }
+
+  async delete(shopId: number) {
+    return this.repository.update(shopId, { status: false });
+  }
+  
+  async enable(shopId: number) {
+    return this.repository.update(shopId, { status: true });
+  }
+
+  async edit(shopId: number, shop: IShop) {
+    return this.repository.update(shopId, shop);
   }
 }
 

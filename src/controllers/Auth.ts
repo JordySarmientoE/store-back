@@ -1,14 +1,13 @@
-import pino from "pino";
 import { Request, Response } from "express";
 import AuthService from "../services/Auth";
-import sendError from "../utils/error-helper";
+import sendError, { keyLogger } from "../utils/error-helper";
 
 class AuthController {
   logger;
   service;
 
   constructor() {
-    this.logger = pino();
+    this.logger = keyLogger;
     this.service = new AuthService();
     this.login = this.login.bind(this);
   }

@@ -1,15 +1,15 @@
-import pino from "pino";
 import { UserRepository } from "../repositories";
 import IAuth from "../interfaces/IAuth";
 import { hashValidate } from "../utils/bcrypt-helper";
 import generateJWT from "../utils/jwt-helper";
+import { keyLogger } from "../utils/error-helper";
 
 class AuthService {
   logger;
   userRepository;
 
   constructor() {
-    this.logger = pino();
+    this.logger = keyLogger;
     this.userRepository = new UserRepository();
     this.login = this.login.bind(this);
   }
@@ -32,6 +32,7 @@ class AuthService {
     }
 
     const token = await generateJWT(user.id);
+    delete user.password;
 
     return { ...user, token };
   }

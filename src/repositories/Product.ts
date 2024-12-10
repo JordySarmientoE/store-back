@@ -1,15 +1,12 @@
-import pino from "pino";
 import { ProductModel } from "../models";
 import { ICategory, IProduct, IUser } from "../interfaces";
 import AppDataSouce from "../database/datasource";
 import { In } from "typeorm";
 
 class ProductRepository {
-  logger;
   repository;
 
   constructor() {
-    this.logger = pino();
     this.repository = AppDataSouce.getRepository(ProductModel);
   }
 
@@ -32,7 +29,28 @@ class ProductRepository {
         shopId,
         status: true,
       },
+      relations: ["category"],
     });
+  }
+
+  async listPaginated(shopId: number, page: number, rows: number) {
+    const skip = (page - 1) * rows;
+    return this.repository.find({
+      skip,
+      take: rows,
+      where: {
+        shopId,
+        ...(rows ? { status: true } : {}),
+      },
+      order: {
+        id: "ASC",
+      },
+      relations: ["category"],
+    });
+  }
+
+  async totalProducts() {
+    return this.repository.count();
   }
 
   async findOne(productId: number, shopId: number) {

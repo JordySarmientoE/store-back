@@ -1,4 +1,3 @@
-import pino from "pino";
 import { OrderRepository } from "../repositories";
 import { InventoryMovementService, OrderProductService, ShopService } from ".";
 import { IShop, IUser } from "../interfaces";
@@ -6,6 +5,7 @@ import IInventoryMovement, {
   IMoveInventory,
 } from "../interfaces/IInventoryMovement";
 import IOrder, { ISaveOrder, Payment } from "../interfaces/IOrder";
+import { keyLogger } from "../utils/error-helper";
 
 class OrderService {
   logger;
@@ -15,7 +15,7 @@ class OrderService {
   shopService;
 
   constructor() {
-    this.logger = pino();
+    this.logger = keyLogger;
     this.repository = new OrderRepository();
     this.inventoryService = new InventoryMovementService();
     this.save = this.save.bind(this);

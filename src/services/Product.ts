@@ -1,7 +1,8 @@
-import pino from "pino";
 import { IProduct, IUser } from "../interfaces";
 import { ProductRepository } from "../repositories";
 import { CategoryService } from ".";
+import { keyLogger } from "../utils/error-helper";
+import IPagination from "../repositories/IPagination";
 
 class ProductService {
   logger;
@@ -9,7 +10,7 @@ class ProductService {
   categoryService;
 
   constructor() {
-    this.logger = pino();
+    this.logger = keyLogger;
     this.repository = new ProductRepository();
     this.categoryService = new CategoryService();
     this.create = this.create.bind(this);
@@ -33,6 +34,18 @@ class ProductService {
 
   async list(shopId: number) {
     return this.repository.list(shopId);
+  }
+
+  async listPaginated(user: IUser, page: number, rows: number): Promise<IPagination<IProduct>> {
+    const shops = await this.repository.listPaginated(user.shop!.id, page, rows);
+    const total = await this.repository.totalProducts();
+
+    return {
+      data: shops,
+      total,
+      page,
+      nroPages: rows ? Math.ceil(total / rows) : 1,
+    };
   }
 
   async findOne(productId: number, shopId: number) {

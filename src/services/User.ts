@@ -1,33 +1,29 @@
-import pino from "pino";
 import { IUser } from "../interfaces";
 import { UserRepository } from "../repositories";
 import { hashValue } from "../utils/bcrypt-helper";
 import generateJWT from "../utils/jwt-helper";
 import { IRegister } from "../interfaces/IAuth";
+import IPagination from "../repositories/IPagination";
+import { RoleEnum } from "../interfaces/IUser";
 
 class UserService {
-  logger;
   userRepository;
 
   constructor() {
-    this.logger = pino();
     this.userRepository = new UserRepository();
-    this.register = this.register.bind(this);
   }
 
   async register(user: IRegister) {
-    const userExists = await this.userRepository.findByEmail(
-      user.email
-    );
+    const userExists = await this.userRepository.findByEmail(user.email);
     if (userExists) {
       throw {
-        message: "Correo ha sido tomado",
+        message: "Correo no se encuentra disponible",
         code: 400,
       };
     }
 
     const newUser = user;
-    newUser.password = hashValue(newUser.password);
+    newUser.password = hashValue(newUser.password!);
 
     const userRepo = await this.userRepository.create(newUser);
     delete userRepo.password;
@@ -39,7 +35,68 @@ class UserService {
     return {
       ...user,
       token,
+    };
+  }
+
+  async list(page: number, rows: number): Promise<IPagination<IUser>> {
+    const total = await this.userRepository.totalUser();
+    let users = await this.userRepository.list(page, rows);
+    users = users.map((user) => {
+      delete user.password;
+      return user;
+    });
+    return {
+      data: users,
+      total,
+      page,
+      nroPages: Math.ceil(total / rows),
+    };
+  }
+
+  async findOne(userId: number) {
+    const user = await this.userRepository.getById(userId);
+    if (!user) {
+      throw {
+        message: "Usuario no existe o está inactivo",
+        code: 400,
+      };
     }
+    return user;
+  }
+
+  async delete(userId: number) {
+    await this.findOne(userId);
+    await this.userRepository.delete(userId);
+  }
+
+  async edit(userId: number, body: IRegister, user: IUser) {
+    if (user.id !== userId && user.role !== RoleEnum.ADMIN) {
+      throw {
+        message: "Usuario no tiene permitido editar",
+        code: 404,
+      };
+    }
+    return this.editUser(userId, body);
+  }
+
+  async editUser(userId: number, body: IRegister) {
+    const usuario = await this.findOne(userId);
+    const userExists = await this.userRepository.findByEmail(body.email);
+    if (userExists && userExists.id !== userId) {
+      throw {
+        message: "Correo no se encuentra disponible",
+        code: 400,
+      };
+    }
+    const newUser = Object.assign(usuario, body);
+    newUser.password = hashValue(newUser.password!);
+    await this.userRepository.edit(userId, newUser);
+    delete newUser.password;
+    return newUser;
+  }
+
+  async enable(userId: number) {
+    await this.userRepository.enable(userId);
   }
 }
 

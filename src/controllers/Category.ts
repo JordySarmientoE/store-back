@@ -1,14 +1,13 @@
 import { Response } from "express";
 import CustomRequest from "../interfaces/CustomRequest";
-import pino from "pino";
 import { CategoryService } from "../services";
-import sendError from "../utils/error-helper";
+import sendError, { keyLogger } from "../utils/error-helper";
 
 class CategoryController {
   logger;
   service;
   constructor() {
-    this.logger = pino();
+    this.logger = keyLogger;
     this.service = new CategoryService();
     this.create = this.create.bind(this);
     this.list = this.list.bind(this);
