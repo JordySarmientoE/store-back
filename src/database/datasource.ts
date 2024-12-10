@@ -29,8 +29,7 @@ const AppDataSource = new DataSource({
     InventoryMovement,
   ],
   migrations: ["dist/migrations/*.js"],
-  ssl:
-    process.env.DB_NAME === "localhost" ? { rejectUnauthorized: false } : false,
+  ssl: process.env.DB_HOST ? { rejectUnauthorized: false } : false,
 });
 
 export default AppDataSource;
