@@ -37,7 +37,7 @@ router.get(
     check("rows", "Las filas es obligatario").not().isEmpty(),
     check("name", "El nombre es opcional").optional(),
     check("lastname", "El apellido es opcional").optional(),
-    check("phone", "El telefono es opcional").optional().isNumeric(),
+    check("phone", "El telefono es opcional").optional().isString(),
     check("email", "El correo es opcional").optional(),
     check("status", "El status es opcional").optional().isString().isIn(Object.values(StatusEnum)),
     ValidateAdmin,
