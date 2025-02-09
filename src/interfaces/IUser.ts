@@ -8,6 +8,12 @@ export enum RoleEnum {
   VENDOR = "VENDOR",
 }
 
+export enum StatusEnum {
+  ENABLED = "ENABLED",
+  DISABLED = "DISABLED",
+  NONE = ""
+}
+
 export default interface IUser {
   name: string;
   lastname: string;
@@ -21,4 +27,15 @@ export default interface IUser {
   updatedAt: Date;
   role?: Role;
   orders?: IOrder[];
+}
+
+export interface IListUser {
+  name?: string;
+  lastname?: string;
+  phone?: string;
+  email?: string;
+  status?: StatusEnum;
+  role?: Role;
+  page: number;
+  rows: number;
 }

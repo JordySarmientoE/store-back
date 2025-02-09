@@ -1,21 +1,19 @@
 import { Request, Response } from "express";
 import AuthService from "../services/Auth";
-import sendError, { keyLogger } from "../utils/error-helper";
+import Logger from "../utils/logger-helper";
+import sendError from "../utils/error-helper";
 
 class AuthController {
-  logger;
   service;
 
   constructor() {
-    this.logger = keyLogger;
     this.service = new AuthService();
-    this.login = this.login.bind(this);
   }
 
-  async login(req: Request, res: Response) {
+  login = async (req: Request, res: Response) => {
     try {
-      this.logger.info("-- Request --");
-      this.logger.info(req.body);
+      Logger.info("-- Request --");
+      Logger.info(req.body);
       const response = await this.service.login(req.body);
 
       res.json(response);

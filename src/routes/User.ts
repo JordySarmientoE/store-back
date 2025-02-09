@@ -4,6 +4,7 @@ import { UserController } from "../controllers";
 import { ValidateMiddleware } from "../middlewares";
 import validateJWT from "../middlewares/validateJWT";
 import { ValidateAdmin } from "../middlewares/validateRole";
+import { StatusEnum } from "../interfaces/IUser";
 const router = Router();
 const controller = new UserController();
 
@@ -34,6 +35,11 @@ router.get(
     validateJWT,
     check("page", "La pagina es obligataria").not().isEmpty(),
     check("rows", "Las filas es obligatario").not().isEmpty(),
+    check("name", "El nombre es opcional").optional(),
+    check("lastname", "El apellido es opcional").optional(),
+    check("phone", "El telefono es opcional").optional().isNumeric(),
+    check("email", "El correo es opcional").optional(),
+    check("status", "El status es opcional").optional().isString().isIn(Object.values(StatusEnum)),
     ValidateAdmin,
     ValidateMiddleware,
   ],

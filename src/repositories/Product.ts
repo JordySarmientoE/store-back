@@ -40,7 +40,6 @@ class ProductRepository {
       take: rows,
       where: {
         shopId,
-        ...(rows ? { status: true } : {}),
       },
       order: {
         id: "ASC",

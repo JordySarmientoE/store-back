@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import pino from "pino";
 import {
   UserRoutes,
   ShopRoutes,
@@ -11,16 +10,15 @@ import {
   OrderRoutes,
 } from "../routes";
 import dbConnection from "../database/config";
+import Logger from "../utils/logger-helper";
 
 class Server {
   app: express.Application;
   port: string;
-  logger: pino.BaseLogger;
 
   constructor() {
     this.app = express();
     this.port = process.env.PORT || "3000";
-    this.logger = pino();
 
     this.connectDB();
     this.middlewares();
@@ -33,7 +31,7 @@ class Server {
 
   listen() {
     this.app.listen(this.port, () => {
-      this.logger.info(`Se inicio el servidor en el puerto ${this.port}`);
+      Logger.info(`Se inicio el servidor en el puerto ${this.port}`);
     });
   }
 

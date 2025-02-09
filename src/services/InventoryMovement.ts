@@ -6,15 +6,11 @@ import {
 import { InventoryMovementRepository } from "../repositories";
 import ProductService from "./Product";
 import { IInventoryMovement, IProduct, IShop } from "../interfaces";
-import { keyLogger } from "../utils/error-helper";
 
 class InventoryMovementService {
-  logger;
   repository;
   productService;
   constructor() {
-    this.logger = keyLogger;
-    this.moveInventory = this.moveInventory.bind(this);
     this.repository = new InventoryMovementRepository();
     this.productService = new ProductService();
   }
@@ -60,7 +56,7 @@ class InventoryMovementService {
           : MovementTypeEnum.OUT;
 
       const inventoryMovement = {
-        quantity: productSearched!.quantity,
+        quantity: Math.abs(productSearched!.quantity),
         product: product,
         shop,
         movementType,

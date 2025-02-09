@@ -4,7 +4,7 @@ import { hashValue } from "../utils/bcrypt-helper";
 import generateJWT from "../utils/jwt-helper";
 import { IRegister } from "../interfaces/IAuth";
 import IPagination from "../repositories/IPagination";
-import { RoleEnum } from "../interfaces/IUser";
+import { IListUser, RoleEnum } from "../interfaces/IUser";
 
 class UserService {
   userRepository;
@@ -38,9 +38,10 @@ class UserService {
     };
   }
 
-  async list(page: number, rows: number): Promise<IPagination<IUser>> {
+  async list(payload: IListUser): Promise<IPagination<IUser>> {
+    const { page, rows } = payload;
     const total = await this.userRepository.totalUser();
-    let users = await this.userRepository.list(page, rows);
+    let users = await this.userRepository.list(payload);
     users = users.map((user) => {
       delete user.password;
       return user;
@@ -48,7 +49,7 @@ class UserService {
     return {
       data: users,
       total,
-      page,
+      page: Number(page),
       nroPages: Math.ceil(total / rows),
     };
   }

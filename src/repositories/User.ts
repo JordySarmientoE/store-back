@@ -1,8 +1,9 @@
 import { UserModel } from "../models";
 import { IShop } from "../interfaces";
 import AppDataSouce from "../database/datasource";
-import { RoleEnum } from "../interfaces/IUser";
+import { IListUser, RoleEnum, StatusEnum } from "../interfaces/IUser";
 import { IRegister } from "../interfaces/IAuth";
+import { Like } from "typeorm";
 
 class UserRepository {
   repository;
@@ -47,15 +48,25 @@ class UserRepository {
     return this.repository.update(id, { shop, role: RoleEnum.VENDOR });
   }
 
-  async list(page: number, rows: number) {
+  async list(payload: IListUser) {
+    const { page, rows } = payload;
     const skip = (page - 1) * rows;
 
+    const status = payload.status === StatusEnum.ENABLED ? true : (payload.status === StatusEnum.DISABLED ? false : undefined);
     return this.repository.find({
       relations: ["shop"],
       skip,
       take: rows,
       order: {
         id: "ASC",
+      },
+      where: {
+        ...(payload.name && { name: Like(`${payload.name}%`) }),
+        ...(payload.email && { email: Like(`${payload.email}%`) }),
+        ...(payload.role && { role: payload.role }),
+        ...(status !== undefined && { status }),
+        ...(payload.phone && { phone: Like(`${payload.phone}%`) }),
+        ...(payload.lastname && { lastname: Like(`${payload.lastname}%`) }),
       },
     });
   }

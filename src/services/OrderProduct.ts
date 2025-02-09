@@ -1,15 +1,11 @@
 import { OrderProductRepository } from "../repositories";
 import { IInventoryMovement, IOrder, IOrderProduct, IShop } from "../interfaces";
-import { keyLogger } from "../utils/error-helper";
 
 class OrderProductService {
-  logger;
   repository;
 
   constructor() {
-    this.logger = keyLogger;
     this.repository = new OrderProductRepository();
-    this.createMany = this.createMany.bind(this);
   }
 
   async createMany(orderProducts: IOrderProduct[]) {

@@ -1,27 +1,21 @@
 import { Request, Response } from "express";
 import { UserService } from "../services";
 import CustomRequest from "../interfaces/CustomRequest";
-import sendError, { keyLogger } from "../utils/error-helper";
+import Logger from "../utils/logger-helper";
+import sendError from "../utils/error-helper";
+import { IListUser } from "../interfaces/IUser";
 
 class UserController {
-  logger;
   service;
 
   constructor() {
-    this.logger = keyLogger;
     this.service = new UserService();
-    this.register = this.register.bind(this);
-    this.getInfo = this.getInfo.bind(this);
-    this.list = this.list.bind(this);
-    this.delete = this.delete.bind(this);
-    this.edit = this.edit.bind(this);
-    this.enable = this.enable.bind(this);
   }
 
-  async register(req: Request, res: Response) {
+  register = async (req: Request, res: Response) => {
     try {
-      this.logger.info("-- Request --");
-      this.logger.info(req.body);
+      Logger.info("-- Request --");
+      Logger.info(req.body);
       const response = await this.service.register(req.body);
       res.json(response);
     } catch (error) {
@@ -29,10 +23,10 @@ class UserController {
     }
   }
 
-  async getInfo(req: CustomRequest, res: Response) {
+  getInfo = async (req: CustomRequest, res: Response) =>{
     try {
-      this.logger.info("-- Request --");
-      this.logger.info(req.body);
+      Logger.info("-- Request --");
+      Logger.info(req.body);
       const { user } = req;
       const response = await this.service.getInfo(user!);
       res.json(response);
@@ -41,21 +35,20 @@ class UserController {
     }
   }
 
-  async list(req: CustomRequest, res: Response) {
+  list = async (req: CustomRequest, res: Response) => {
     try {
-      const page = Number(req.query.page);
-      const rows = Number(req.query.rows);
-      const response = await this.service.list(page, rows);
+      const payload = req.query as unknown as IListUser;
+      const response = await this.service.list(payload);
       res.json(response);
     } catch (error) {
       sendError(res, error);
     }
   }
 
-  async delete(req: CustomRequest, res: Response) {
+  delete = async (req: CustomRequest, res: Response) => {
     try {
-      this.logger.info("-- Request --");
-      this.logger.info(req.params);
+      Logger.info("-- Request --");
+      Logger.info(req.params);
       const params = req.params;
       const userId = Number(params.userId);
       await this.service.delete(userId);
@@ -67,10 +60,10 @@ class UserController {
     }
   }
 
-  async edit(req: CustomRequest, res: Response) {
+  edit = async (req: CustomRequest, res: Response) => {
     try {
-      this.logger.info("-- Request --");
-      this.logger.info(req.body);
+      Logger.info("-- Request --");
+      Logger.info(req.body);
       const params = req.params;
       const userId = Number(params.userId);
       const { user } = req;
@@ -81,10 +74,10 @@ class UserController {
     }
   }
 
-  async enable(req: CustomRequest, res: Response) {
+  enable = async (req: CustomRequest, res: Response) => {
     try {
-      this.logger.info("-- Request --");
-      this.logger.info(req.body);
+      Logger.info("-- Request --");
+      Logger.info(req.body);
       const params = req.params;
       const userId = Number(params.userId);
       await this.service.enable(userId);

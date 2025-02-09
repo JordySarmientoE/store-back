@@ -1,19 +1,21 @@
 import { IProduct, IUser } from "../interfaces";
-import { ProductRepository } from "../repositories";
+import {
+  InventoryMovementRepository,
+  ProductRepository,
+} from "../repositories";
 import { CategoryService } from ".";
-import { keyLogger } from "../utils/error-helper";
 import IPagination from "../repositories/IPagination";
+import IInventoryMovement, { MovementTypeEnum } from "../interfaces/IInventoryMovement";
 
 class ProductService {
-  logger;
   repository;
   categoryService;
+  inventoryMovementRepository;
 
   constructor() {
-    this.logger = keyLogger;
     this.repository = new ProductRepository();
     this.categoryService = new CategoryService();
-    this.create = this.create.bind(this);
+    this.inventoryMovementRepository = new InventoryMovementRepository();
   }
 
   async create(user: IUser, product: IProduct, categoryId: number) {
@@ -36,8 +38,16 @@ class ProductService {
     return this.repository.list(shopId);
   }
 
-  async listPaginated(user: IUser, page: number, rows: number): Promise<IPagination<IProduct>> {
-    const shops = await this.repository.listPaginated(user.shop!.id, page, rows);
+  async listPaginated(
+    user: IUser,
+    page: number,
+    rows: number
+  ): Promise<IPagination<IProduct>> {
+    const shops = await this.repository.listPaginated(
+      user.shop!.id,
+      page,
+      rows
+    );
     const total = await this.repository.totalProducts();
 
     return {
@@ -72,13 +82,19 @@ class ProductService {
 
   async update(user: IUser, id: number, product: IProduct) {
     const newProduct = await this.findOne(id, user.shop!.id);
-    await this.repository.update(id, product);
-    if (!newProduct) {
-      throw {
-        message: "Producto no existe",
-        code: 400,
-      };
+    if (product.quantity) {
+      const changeQuantity = product.quantity - newProduct.quantity;
+      if (changeQuantity !== 0) {
+        await this.inventoryMovementRepository.create({
+          product: newProduct,
+          quantity: Math.abs(changeQuantity),
+          movementType: changeQuantity > 0 ? MovementTypeEnum.IN : MovementTypeEnum.OUT,
+          shop: user.shop,
+        } as IInventoryMovement);
+      }
     }
+    Object.assign(newProduct, product);
+    await this.repository.update(id, newProduct);
     return newProduct;
   }
 
@@ -103,7 +119,7 @@ class ProductService {
 
   async updateMany(products: IProduct[]) {
     const promises = products.map((product) =>
-      this.repository.update(product.id, product)
+      this.repository.update(product.id!, product)
     );
     await Promise.all(promises);
   }

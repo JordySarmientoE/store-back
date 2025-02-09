@@ -1,25 +1,19 @@
 import { Response } from "express";
 import CustomRequest from "../interfaces/CustomRequest";
 import { CategoryService } from "../services";
-import sendError, { keyLogger } from "../utils/error-helper";
+import Logger from "../utils/logger-helper";
+import sendError from "../utils/error-helper";
 
 class CategoryController {
-  logger;
   service;
   constructor() {
-    this.logger = keyLogger;
     this.service = new CategoryService();
-    this.create = this.create.bind(this);
-    this.list = this.list.bind(this);
-    this.findOne = this.findOne.bind(this);
-    this.update = this.update.bind(this);
-    this.delete = this.delete.bind(this);
   }
 
-  async create(req: CustomRequest, res: Response) {
+  create = async (req: CustomRequest, res: Response) => {
     try {
-      this.logger.info("-- Request --");
-      this.logger.info(req.body);
+      Logger.info("-- Request --");
+      Logger.info(req.body);
       const user = req.user!;
       const response = await this.service.create(user, req.body);
       res.json(response);
@@ -28,10 +22,10 @@ class CategoryController {
     }
   }
 
-  async list(req: CustomRequest, res: Response) {
+  list = async (req: CustomRequest, res: Response) => {
     try {
-      this.logger.info("-- Request --");
-      this.logger.info(req.params);
+      Logger.info("-- Request --");
+      Logger.info(req.params);
       const shopId = Number(req.params.shopId);
       const response = await this.service.list(shopId);
       res.json(response);
@@ -40,10 +34,10 @@ class CategoryController {
     }
   }
 
-  async findOne(req: CustomRequest, res: Response) {
+  findOne = async (req: CustomRequest, res: Response) => {
     try {
-      this.logger.info("-- Request --");
-      this.logger.info(req.params);
+      Logger.info("-- Request --");
+      Logger.info(req.params);
       const categoryId = Number(req.params.id);
       const shopId = Number(req.params.shopId);
       const response = await this.service.findOne(categoryId, shopId);
@@ -53,10 +47,10 @@ class CategoryController {
     }
   }
 
-  async update(req: CustomRequest, res: Response) {
+  update = async (req: CustomRequest, res: Response) => {
     try {
-      this.logger.info("-- Request --");
-      this.logger.info(req.params);
+      Logger.info("-- Request --");
+      Logger.info(req.params);
       const user = req.user!;
       const categoryId = Number(req.params.id);
       const response = await this.service.update(user, categoryId, req.body);
@@ -66,10 +60,10 @@ class CategoryController {
     }
   }
 
-  async delete(req: CustomRequest, res: Response) {
+  delete = async (req: CustomRequest, res: Response) => {
     try {
-      this.logger.info("-- Request --");
-      this.logger.info(req.params);
+      Logger.info("-- Request --");
+      Logger.info(req.params);
       const user = req.user!;
       const categoryId = Number(req.params.id);
       const response = await this.service.delete(user, categoryId);

@@ -2,20 +2,13 @@ import { IShop } from "../interfaces";
 import { ShopRepository, UserRepository } from "../repositories";
 import IUser, { RoleEnum } from "../interfaces/IUser";
 import IPagination from "../repositories/IPagination";
-import { keyLogger } from "../utils/error-helper";
 
 class ShopService {
-  logger;
   shopRepository;
   userRepository;
   constructor() {
-    this.logger = keyLogger;
     this.shopRepository = new ShopRepository();
     this.userRepository = new UserRepository();
-    this.register = this.register.bind(this);
-    this.assignShop = this.assignShop.bind(this);
-    this.getShops = this.getShops.bind(this);
-    this.list = this.list.bind(this);
   }
 
   async register(shop: IShop) {

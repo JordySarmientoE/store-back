@@ -1,15 +1,11 @@
 import { ICategory, IUser } from "../interfaces";
 import { CategoryRepository } from "../repositories";
-import { keyLogger } from "../utils/error-helper";
 
 class CategoryService {
-  logger;
   repository;
 
   constructor() {
-    this.logger = keyLogger;
     this.repository = new CategoryRepository();
-    this.create = this.create.bind(this);
   }
 
   async create(user: IUser, category: ICategory) {

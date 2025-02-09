@@ -5,20 +5,16 @@ import IInventoryMovement, {
   IMoveInventory,
 } from "../interfaces/IInventoryMovement";
 import IOrder, { ISaveOrder, Payment } from "../interfaces/IOrder";
-import { keyLogger } from "../utils/error-helper";
 
 class OrderService {
-  logger;
   repository;
   inventoryService;
   orderProductService;
   shopService;
 
   constructor() {
-    this.logger = keyLogger;
     this.repository = new OrderRepository();
     this.inventoryService = new InventoryMovementService();
-    this.save = this.save.bind(this);
     this.orderProductService = new OrderProductService();
     this.shopService = new ShopService();
   }
