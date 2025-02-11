@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { RoleEnum, StatusEnum } from "../interfaces/IUser";
 
-const listUserList = Joi.object({
+const listUserListSchema = Joi.object({
   rows: Joi.number().required(),
   page: Joi.number().required(),
   name: Joi.string().optional().allow(""),
@@ -12,21 +12,20 @@ const listUserList = Joi.object({
   role: Joi.string().optional().allow("").valid(...Object.values(RoleEnum)),
 });
 
-const registerUser = Joi.object({
+const registerUserSchema = Joi.object({
   name: Joi.string().required(),
   lastname: Joi.string().required(),
   password: Joi.string().min(5).required(),
   email: Joi.string().email().required(),
-  phone: Joi.number().required(),
+  phone: Joi.string().required().min(9).max(9),
 });
 
-const editUser = Joi.object({
-  userId: Joi.number().required(),
+const editUserSchema = Joi.object({
   name: Joi.string().required(),
   lastname: Joi.string().required(),
   password: Joi.string().min(5).required(),
   email: Joi.string().email().optional(),
-  phone: Joi.number().required(),
+  phone: Joi.string().required().min(9).max(9),
 });
 
-export { listUserList, registerUser, editUser };
+export { listUserListSchema, registerUserSchema, editUserSchema };

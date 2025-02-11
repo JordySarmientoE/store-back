@@ -12,7 +12,7 @@ const validateJoi = (req: Request, schema: Joi.ObjectSchema<any>) => {
     ...body,
   };
 
-  const { error } = schema.validate(payload);
+  const { error } = schema.validate(payload, { allowUnknown: true });
   if (error) {
     throw {
       errors: error.details.map((error) => {

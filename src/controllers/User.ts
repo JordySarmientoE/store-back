@@ -5,7 +5,7 @@ import Logger from "../utils/logger-helper";
 import sendError from "../utils/error-helper";
 import { IListUser } from "../interfaces/IUser";
 import { validateJoi } from "../validations";
-import { editUser, listUserList, registerUser } from "../validations/user.validations";
+import { editUserSchema, listUserListSchema, registerUserSchema } from "../validations/user.validations";
 
 class UserController {
   service;
@@ -18,7 +18,7 @@ class UserController {
     try {
       Logger.info("-- Request --");
       Logger.info(req.body);
-      validateJoi(req, registerUser);
+      validateJoi(req, registerUserSchema);
       const response = await this.service.register(req.body);
       res.json(response);
     } catch (error) {
@@ -41,7 +41,7 @@ class UserController {
   list = async (req: CustomRequest, res: Response) => {
     try {
       const payload = req.query as unknown as IListUser;
-      validateJoi(req, listUserList);
+      validateJoi(req, listUserListSchema);
       const response = await this.service.list(payload);
       res.json(response);
     } catch (error) {
@@ -71,7 +71,7 @@ class UserController {
       const params = req.params;
       const userId = Number(params.userId);
       const { user } = req;
-      validateJoi(req, editUser);
+      validateJoi(req, editUserSchema);
       const response = await this.service.edit(userId, req.body, user!);
       res.json(response);
     } catch (error) {
