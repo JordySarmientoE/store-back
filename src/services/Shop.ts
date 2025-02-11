@@ -2,6 +2,7 @@ import { IShop } from "../interfaces";
 import { ShopRepository, UserRepository } from "../repositories";
 import IUser, { RoleEnum } from "../interfaces/IUser";
 import IPagination from "../repositories/IPagination";
+import { IListShops } from "../interfaces/IShop";
 
 class ShopService {
   shopRepository;
@@ -35,19 +36,16 @@ class ShopService {
     await this.userRepository.assignShop(userId, shop);
   }
 
-  async getShops() {
-    return this.shopRepository.list();
-  }
-
-  async list(page: number, rows: number): Promise<IPagination<IShop>> {
-    const shops = await this.shopRepository.listPaginated(page, rows);
+  async list(payload: IListShops): Promise<IPagination<IShop>> {
+    const { page, rows } = payload;
+    const shops = await this.shopRepository.listPaginated(payload);
     const total = await this.shopRepository.totalShops();
 
     return {
       data: shops,
       total,
-      page,
-      nroPages: rows ? Math.ceil(total / rows) : 1,
+      page: Number(page),
+      nroPages: Math.ceil(total / rows),
     };
   }
 

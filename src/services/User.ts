@@ -14,7 +14,7 @@ class UserService {
   }
 
   async register(user: IRegister) {
-    const userExists = await this.userRepository.findByEmail(user.email);
+    const userExists = await this.userRepository.findByEmail(user.email.toLowerCase());
     if (userExists) {
       throw {
         message: "Correo no se encuentra disponible",
@@ -82,7 +82,7 @@ class UserService {
 
   async editUser(userId: number, body: IRegister) {
     const usuario = await this.findOne(userId);
-    const userExists = await this.userRepository.findByEmail(body.email);
+    const userExists = await this.userRepository.findByEmail(body.email.toLowerCase());
     if (userExists && userExists.id !== userId) {
       throw {
         message: "Correo no se encuentra disponible",

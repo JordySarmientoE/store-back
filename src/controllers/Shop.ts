@@ -3,6 +3,9 @@ import CustomRequest from "../interfaces/CustomRequest";
 import { ShopService } from "../services";
 import Logger from "../utils/logger-helper";
 import sendError from "../utils/error-helper";
+import { validateJoi } from "../validations";
+import { listShopsSchema } from "../validations/shop.validations";
+import { IListShops } from "../interfaces/IShop";
 
 class ShopController {
   service;
@@ -35,15 +38,6 @@ class ShopController {
     }
   };
 
-  getShops = async (req: CustomRequest, res: Response) => {
-    try {
-      const shops = await this.service.getShops();
-      res.status(200).json(shops);
-    } catch (error) {
-      sendError(res, error);
-    }
-  };
-
   getShop = async (req: CustomRequest, res: Response) => {
     try {
       Logger.info("-- Request --");
@@ -58,9 +52,9 @@ class ShopController {
 
   list = async (req: CustomRequest, res: Response) => {
     try {
-      const page = Number(req.query.page || 1);
-      const rows = Number(req.query.rows);
-      const response = await this.service.list(page, rows);
+      const payload = req.query as unknown as IListShops;
+      validateJoi(req, listShopsSchema);
+      const response = await this.service.list(payload);
       res.json(response);
     } catch (error) {
       sendError(res, error);

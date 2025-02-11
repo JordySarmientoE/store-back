@@ -11,7 +11,7 @@ class AuthService {
   }
 
   async login(auth: IAuth) {
-    const user = await this.userRepository.findByEmail(auth.email);
+    const user = await this.userRepository.findByEmail(auth.email.toLowerCase());
     if (!user) {
       throw {
         message: "Correo o la contraseña no son correctos",

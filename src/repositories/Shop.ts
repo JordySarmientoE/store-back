@@ -1,5 +1,8 @@
+import { ILike, Like } from "typeorm";
 import AppDataSouce from "../database/datasource";
 import { IShop } from "../interfaces";
+import { IListShops } from "../interfaces/IShop";
+import { StatusEnum } from "../interfaces/IUser";
 import { ShopModel } from "../models";
 
 class ShopRepository {
@@ -33,13 +36,23 @@ class ShopRepository {
     });
   }
 
-  async listPaginated(page: number, rows: number) {
+  async listPaginated(payload: IListShops) {
+    const { page, rows } = payload;
     const skip = (page - 1) * rows;
+    const status = payload.status === StatusEnum.ENABLED ? true : (payload.status === StatusEnum.DISABLED ? false : undefined);
+
     return this.repository.find({
       skip,
       take: rows,
       order: {
         id: "ASC",
+      },
+      where: {
+        ...(payload.name && { name: ILike(`${payload.name}%`) }),
+        ...(payload.ruc && { ruc: Like(`${payload.ruc}%`) }),
+        ...(status !== undefined && { status }),
+        ...(payload.address && { address: ILike(`${payload.address}%`) }),
+        ...(payload.phone && { phone: Like(`${payload.phone}%`) }),
       },
     });
   }
@@ -59,7 +72,7 @@ class ShopRepository {
   async delete(shopId: number) {
     return this.repository.update(shopId, { status: false });
   }
-  
+
   async enable(shopId: number) {
     return this.repository.update(shopId, { status: true });
   }

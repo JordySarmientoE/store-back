@@ -14,7 +14,7 @@ const validateJWT = async (
 
   if (!token) {
     return res.status(401).json({
-      msg: "No hay token en la petición",
+      message: "No hay token en la petición",
     });
   }
 
@@ -22,7 +22,7 @@ const validateJWT = async (
     const decoded = jwt.verify(token, process.env.SECRETORPRIVATEKEY!);
     if (typeof decoded === "string") {
       return res.status(401).json({
-        msg: "Token no válido",
+        message: "Token no válido",
       });
     }
 
@@ -30,7 +30,7 @@ const validateJWT = async (
 
     if (!usuario || !usuario.status) {
       return res.status(401).json({
-        msg: "Token no válido",
+        message: "Token no válido",
       });
     }
 
@@ -39,7 +39,7 @@ const validateJWT = async (
     next();
   } catch (err) {
     return res.status(401).json({
-      msg: "Token no válido",
+      message: "Token no válido",
     });
   }
 };

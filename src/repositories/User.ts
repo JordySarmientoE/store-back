@@ -3,7 +3,7 @@ import { IShop } from "../interfaces";
 import AppDataSouce from "../database/datasource";
 import { IListUser, RoleEnum, StatusEnum } from "../interfaces/IUser";
 import { IRegister } from "../interfaces/IAuth";
-import { Like } from "typeorm";
+import { ILike, Like } from "typeorm";
 
 class UserRepository {
   repository;
@@ -16,6 +16,7 @@ class UserRepository {
     const newUser = new UserModel();
     Object.assign(newUser, user);
     newUser.role = user.role ?? RoleEnum.BUYER;
+    newUser.email = user.email.toLowerCase();
     await this.repository.save(newUser);
     return newUser;
   }
@@ -61,12 +62,12 @@ class UserRepository {
         id: "ASC",
       },
       where: {
-        ...(payload.name && { name: Like(`${payload.name}%`) }),
-        ...(payload.email && { email: Like(`${payload.email}%`) }),
+        ...(payload.name && { name: ILike(`${payload.name}%`) }),
+        ...(payload.email && { email: ILike(`${payload.email}%`) }),
         ...(payload.role && { role: payload.role }),
         ...(status !== undefined && { status }),
         ...(payload.phone && { phone: Like(`${payload.phone}%`) }),
-        ...(payload.lastname && { lastname: Like(`${payload.lastname}%`) }),
+        ...(payload.lastname && { lastname: ILike(`${payload.lastname}%`) }),
       },
     });
   }
@@ -80,7 +81,9 @@ class UserRepository {
   }
 
   async edit(id: number, body: IRegister) {
-    return this.repository.update(id, body);
+    const user = { ...body };
+    user.email = body.email.toLowerCase();
+    return this.repository.update(id, user);
   }
 
   async enable(id: number) {

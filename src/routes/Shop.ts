@@ -48,19 +48,7 @@ router.post(
   controller.assignShop
 );
 
-router.get("/", [], controller.getShops);
-
-router.get(
-  "/list",
-  [
-    validateJWT,
-    check("page", "La pagina es obligataria").not().isEmpty(),
-    check("rows", "Las filas es obligatario").not().isEmpty(),
-    ValidateAdmin,
-    ValidateMiddleware,
-  ],
-  controller.list
-);
+router.get("/list",controller.list);
 
 router.get(
   "/:shopId",

@@ -4,6 +4,8 @@ import CustomRequest from "../interfaces/CustomRequest";
 import Logger from "../utils/logger-helper";
 import sendError from "../utils/error-helper";
 import { IListUser } from "../interfaces/IUser";
+import { validateJoi } from "../validations";
+import { listUserList } from "../validations/user.validations";
 
 class UserController {
   service;
@@ -38,6 +40,7 @@ class UserController {
   list = async (req: CustomRequest, res: Response) => {
     try {
       const payload = req.query as unknown as IListUser;
+      validateJoi(req, listUserList);
       const response = await this.service.list(payload);
       res.json(response);
     } catch (error) {
