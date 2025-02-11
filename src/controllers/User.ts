@@ -5,7 +5,7 @@ import Logger from "../utils/logger-helper";
 import sendError from "../utils/error-helper";
 import { IListUser } from "../interfaces/IUser";
 import { validateJoi } from "../validations";
-import { listUserList } from "../validations/user.validations";
+import { editUser, listUserList, registerUser } from "../validations/user.validations";
 
 class UserController {
   service;
@@ -18,6 +18,7 @@ class UserController {
     try {
       Logger.info("-- Request --");
       Logger.info(req.body);
+      validateJoi(req, registerUser);
       const response = await this.service.register(req.body);
       res.json(response);
     } catch (error) {
@@ -70,6 +71,7 @@ class UserController {
       const params = req.params;
       const userId = Number(params.userId);
       const { user } = req;
+      validateJoi(req, editUser);
       const response = await this.service.edit(userId, req.body, user!);
       res.json(response);
     } catch (error) {

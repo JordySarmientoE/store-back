@@ -6,6 +6,7 @@ import sendError from "../utils/error-helper";
 import { validateJoi } from "../validations";
 import { listShopsSchema } from "../validations/shop.validations";
 import { IListShops } from "../interfaces/IShop";
+import { editUser, registerUser } from "../validations/user.validations";
 
 class ShopController {
   service;
@@ -17,6 +18,7 @@ class ShopController {
     try {
       Logger.info("-- Request --");
       Logger.info(req.body);
+      validateJoi(req, registerUser);
       const response = await this.service.register(req.body);
       res.json(response);
     } catch (error) {
@@ -98,6 +100,7 @@ class ShopController {
       const params = req.params;
       const shopId = Number(params.shopId);
       const { user } = req;
+      validateJoi(req, editUser);
       const response = await this.service.edit(shopId, req.body, user!);
       res.json(response);
     } catch (error) {

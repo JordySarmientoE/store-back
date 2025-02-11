@@ -12,4 +12,21 @@ const listUserList = Joi.object({
   role: Joi.string().optional().allow("").valid(...Object.values(RoleEnum)),
 });
 
-export { listUserList };
+const registerUser = Joi.object({
+  name: Joi.string().required(),
+  lastname: Joi.string().required(),
+  password: Joi.string().min(5).required(),
+  email: Joi.string().email().required(),
+  phone: Joi.number().required(),
+});
+
+const editUser = Joi.object({
+  userId: Joi.number().required(),
+  name: Joi.string().required(),
+  lastname: Joi.string().required(),
+  password: Joi.string().min(5).required(),
+  email: Joi.string().email().optional(),
+  phone: Joi.number().required(),
+});
+
+export { listUserList, registerUser, editUser };
